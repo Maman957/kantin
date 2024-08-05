@@ -819,7 +819,6 @@
             <!-- BEGIN: Breadcrumb -->
             <nav aria-label="breadcrumb" class="-intro-x h-full mr-auto">
                 <ol class="breadcrumb breadcrumb-light">
-                    <li class="breadcrumb-item"><a href=""><?= $title ?></a></li>
                 </ol>
             </nav>
             <!-- END: Breadcrumb -->
@@ -832,25 +831,40 @@
             </div>
             <!-- END: Notifications -->
             <!-- BEGIN: Account Menu -->
-            <div class="intro-x dropdown w-8 h-8">
-                <div class="dropdown-toggle w-8 h-8 rounded-full overflow-hidden shadow-lg image-fit zoom-in scale-110" role="button" aria-expanded="false" data-tw-toggle="dropdown">
-                    <img alt="Midone - HTML Admin Template" src="<?= site_url('asset') ?>/user.png">
-                </div>
+            <?php if ($this->session->userdata('id_pengguna') == null) {
+            ?> <div class="intro-x dropdown mr-4 sm:mr-6">
+                    <a href="<?= base_url() ?>">
+                        <div class="dropdown-toggle notification cursor-pointer" role="button"> <i data-lucide="log-in" class="notification__icon dark:text-slate-500"></i> </div>
+                    </a>
+                </div> <?php } else { ?>
+                <div class="intro-x dropdown w-8 h-8">
+                    <div class="dropdown-toggle w-8 h-8 rounded-full overflow-hidden shadow-lg image-fit zoom-in scale-110" role="button" aria-expanded="false" data-tw-toggle="dropdown">
+                        <?php if ($this->session->userdata('foto') == null) {
+                        ?> <img alt="Midone - HTML Admin Template" src="<?= site_url('asset') ?>/user.jpg"><?php } else { ?>
+                            <img src="<?= base_url('assets/img/produk/' . $this->session->userdata('foto')) ?>"></i> <?php } ?>
+                    </div>
+                <?php } ?>
                 <div class="dropdown-menu w-56">
                     <ul class="dropdown-content bg-primary/80 before:block before:absolute before:bg-black before:inset-0 before:rounded-md before:z-[-1] text-white">
-                        <li>
-                            <a href="<?= base_url('profil') ?>" class="dropdown-item hover:bg-white/5"> <i data-lucide="user" class="w-4 h-4 mr-2"></i> Profil </a>
+                        <li class="p-2">
+                            <div class="font-medium"> <?php echo $this->session->userdata('nama_pengguna') ?></div>
+                            <div class="text-xs text-white/60 mt-0.5 dark:text-slate-500"> <?php echo $this->session->userdata('username') ?></div>
                         </li>
                         <li>
                             <hr class="dropdown-divider border-white/[0.08]">
                         </li>
                         <li>
-                            <a href="<?= base_url() ?>" class="dropdown-item hover:bg-white/5"> <i data-lucide="toggle-right" class="w-4 h-4 mr-2"></i> Keluar </a>
+                            <a href="<?= base_url('profil') ?>" class="dropdown-item hover:bg-white/5"> <i data-lucide="user" class="w-4 h-4 mr-2"></i> Profil </a>
+                        </li>
+                        <li>
+                        </li>
+                        <li>
+                            <a href="<?= base_url() ?>" class="dropdown-item hover:bg-white/5"> <i data-lucide="log-out" class="w-4 h-4 mr-2"></i> Keluar </a>
                         </li>
                     </ul>
                 </div>
-            </div>
-            <!-- END: Account Menu -->
+                </div>
+                <!-- END: Account Menu -->
         </div>
     </div>
     <!-- END: Top Bar -->

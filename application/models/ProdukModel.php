@@ -9,6 +9,10 @@ class ProdukModel extends CI_Model
         }
         return $this->db->get('produk');
     }
+    public function getProdukTeratas()
+    {
+        return $this->db->query('SELECT produk.nama_produk, SUM(detail_penjualan.jumlah) AS jumlah_terjual FROM produk JOIN detail_penjualan ON produk.id_produk = detail_penjualan.id_produk GROUP BY produk.nama_produk ORDER BY jumlah_terjual DESC;');
+    }
     public function getLaporanCetak()
     {
         return $this->db->query('SELECT pengguna.nama_pengguna, produk.nama_produk, produk.harga_jual, detail_penjualan.jumlah, detail_penjualan.harga, penjualan.tanggal_penjualan FROM detail_penjualan JOIN penjualan ON detail_penjualan.id_penjualan = penjualan.id_penjualan JOIN produk ON detail_penjualan.id_produk = produk.id_produk JOIN pengguna ON penjualan.id_pengguna = pengguna.id_pengguna;');
@@ -52,7 +56,7 @@ class ProdukModel extends CI_Model
     {
         $date = date('Y-m-d');
         $value = array(
-            'foto' => $data['foto'],
+            'foto' => null,
             'tanggal_update' => $date,
         );
 

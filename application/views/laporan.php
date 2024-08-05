@@ -1,14 +1,18 @@
-<div class="row tm-content-row tm-mt-big">
-    <div class="col-xl-12 col-lg-12 tm-md-12 tm-sm-12 tm-col">
-        <div class="bg-light tm-block h-100">
-            <div class="row">
-                <div class="col-md-9 col-sm-12">
-                    <a href="<?= base_url('cetak') ?>" class="btn btn-small btn-primary m-1">Cetak Data</a>
-                </div>
-                <div class="col-md-3 col-sm-12 text-right">
-
-                </div>
+<div class="content">
+    <h2 class="intro-y text-lg font-medium mt-10">
+        Laporan Penjualan
+    </h2>
+    <div class="grid grid-cols-12 gap-6 mt-5">
+        <div class="intro-y col-span-12 flex flex-wrap xl:flex-nowrap items-center mt-2">
+            <div class="flex w-full sm:w-auto">
+                <div class="w-48 relative text-slate-500"></div>
             </div>
+            <div class="hidden xl:block mx-auto text-slate-500"></div>
+            <div class="w-full xl:w-auto flex flex-wrap xl:flex-nowrap items-center gap-y-3 mt-3 xl:mt-0">
+                <a href="<?= base_url('cetak') ?>" class="btn btn-primary shadow-md mr-2"> <i data-lucide="printer" class="w-4 h-4"></i></a>
+            </div>
+        </div>
+        <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible">
             <div class="table-responsive">
                 <table class="table table-bordered tm-table-striped-even mt-3">
                     <thead>

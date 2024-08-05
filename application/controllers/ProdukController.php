@@ -20,7 +20,7 @@ class ProdukController extends CI_Controller
     }
     public function dasbor()
     {
-        $data['produk'] = $this->ProdukModel->getProduk()->result();
+        $data['produk'] = $this->ProdukModel->getProdukTeratas()->result();
         $data['statistik'] = $this->ProdukModel->getStatistik()->result();
         $data['halaman'] = 'dasbor';
 
@@ -96,6 +96,14 @@ class ProdukController extends CI_Controller
             );
         }
 
+        $this->ProdukModel->simpanFoto($data);
+        redirect(base_url('profil'));
+    }
+    public function hapusFoto()
+    {
+        $data = array(
+            'id_pengguna' => $this->input->post('id_pengguna'),
+        );
         $this->ProdukModel->simpanFoto($data);
         redirect(base_url('profil'));
     }

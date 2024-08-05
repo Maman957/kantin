@@ -29,13 +29,19 @@ class LoginController extends CI_Controller
         if ($pengguna) {
             if ($pengguna['role'] == 1) {
                 $data = [
-                    'id_pengguna' => $pengguna['id_pengguna']
+                    'id_pengguna' => $pengguna['id_pengguna'],
+                    'nama_pengguna' => $pengguna['nama_pengguna'],
+                    'foto' => $pengguna['foto'],
+                    'username' => $pengguna['username']
                 ];
                 $this->session->set_userdata($data);
                 redirect(base_url('dasbor'));
             } else {
                 $data = [
-                    'id_pengguna' => $pengguna['id_pengguna']
+                    'id_pengguna' => $pengguna['id_pengguna'],
+                    'nama_pengguna' => $pengguna['nama_pengguna'],
+                    'foto' => $pengguna['foto'],
+                    'username' => $pengguna['username']
                 ];
                 $this->session->set_userdata($data);
                 redirect(base_url('katalog'));
@@ -60,7 +66,10 @@ class LoginController extends CI_Controller
             $pelanggan = $this->LoginModel->getPengguna($username, $password)->row_array();
             if ($pelanggan) {
                 $data = [
-                    'id_pengguna' => $pelanggan['id_pengguna']
+                    'id_pengguna' => $pengguna['id_pengguna'],
+                    'nama_pengguna' => $pengguna['nama_pengguna'],
+                    'foto' => $pengguna['foto'],
+                    'username' => $pengguna['username']
                 ];
                 $this->session->set_userdata($data);
                 redirect(base_url('katalog'));

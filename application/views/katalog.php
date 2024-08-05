@@ -1,17 +1,29 @@
 <div class="content">
+    <h2 class="intro-y text-lg font-medium mt-10">
+        Katalog Produk
+    </h2>
     <div class="grid grid-cols-12 gap-6 mt-5">
-        <div class="intro-y col-span-12 flex flex-wrap sm:flex-nowrap items-center mt-2">
-
-            <div class="w-full sm:w-auto mt-3 sm:mt-0 sm:ml-auto md:ml-0">
+        <div class="intro-y col-span-12 flex flex-wrap xl:flex-nowrap items-center mt-2">
+            <div class="flex w-full sm:w-auto">
                 <form action="<?= base_url('katalog') ?>" method="post">
                     <div class="w-56 relative text-slate-500">
                         <input type="text" class="form-control w-56 box pr-10" placeholder="Cari..." name="keyword">
                         <i class="w-4 h-4 absolute my-auto inset-y-0 mr-3 right-0" data-lucide="search" type="submit"></i>
                     </div>
                 </form>
+                <select class="w-48 xl:w-auto form-select box ml-2">
+                    <option>Kategori</option>
+
+                    <option><a href="<?= base_url('katalog') ?>">Semua</a></option>
+
+                    <option>Makanan</option>
+                    <option>Minuman</option>
+                </select>
+            </div>
+            <div class="hidden xl:block mx-auto text-slate-500"></div>
+            <div class="w-full xl:w-auto flex flex-wrap xl:flex-nowrap items-center gap-y-3 mt-3 xl:mt-0">
             </div>
         </div>
-        <!-- BEGIN: Users Layout -->
         <?php foreach ($produk as $item) : ?>
             <div class="intro-y col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-3">
                 <div class="box">

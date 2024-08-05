@@ -59,6 +59,7 @@ $route['dasbor'] = 'ProdukController/dasbor';
 $route['produk'] = 'ProdukController/produk';
 $route['laporan'] = 'ProdukController/laporan';
 $route['profil'] = 'ProdukController/profil';
+$route['hapus_foto/(:num)'] = 'ProdukController/hapusFoto/$1';
 $route['hapus_produk/(:num)'] = 'ProdukController/hapusProduk/$1';
 $route['hapus_akun/(:num)'] = 'ProdukController/hapusAkun/$1';
 $route['tambah_produk'] = 'ProdukController/tambahProduk';

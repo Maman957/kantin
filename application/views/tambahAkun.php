@@ -1,71 +1,65 @@
-<div class="row tm-mt-big">
-    <div class="col-xl-12 col-lg-10 col-md-12 col-sm-12">
-        <div class="bg-white tm-block">
-            <div class="row mt-4">
-                <br>
-                <div class="col-xl-3 col-lg-3 mb-4 mx-auto">
-                    <center>
-
-                        <div class="tm-product-img-dummy">
-                            <form method="post" action="<?= base_url('simpan_akun') ?>" enctype="multipart/form-data" class="tm-edit-product-form">
-                                <input id="fileInput" name="foto" type="file" style="display:none;" required />
-                                <i class="fas fa-5x fa-cloud-upload-alt" onclick="document.getElementById('fileInput').click();"></i>
+<div class="content">
+    <div class="intro-y flex items-center mt-8">
+        <h2 class="text-lg font-medium mr-auto">
+            Tambah Akun Pengguna
+        </h2>
+    </div>
+    <div class="grid grid-cols-12 gap-6">
+        <!-- END: Profile Menu -->
+        <div class="col-span-12 lg:col-span-12 2xl:col-span-12">
+            <!-- BEGIN: Display Information -->
+            <div class="intro-y box lg:mt-5">
+                <div class="p-5">
+                    <div class="flex flex-col-reverse xl:flex-row flex-col">
+                        <div class="flex-1 mt-6 xl:mt-0">
+                            <form method="post" action="<?= base_url('simpan_akun') ?>" enctype="multipart/form-data">
+                                <div class="grid grid-cols-12 gap-x-5">
+                                    <div class="col-span-12 2xl:col-span-6">
+                                        <div>
+                                            <label for="update-profile-form-1" class="form-label">Nama Pengguna</label>
+                                            <input id="update-profile-form-1" type="text" class="form-control" name="nama" placeholder="Nama pengguna" required>
+                                        </div>
+                                        <div class="mt-3">
+                                            <label for="update-profile-form-1" class="form-label">Username</label>
+                                            <input id="update-profile-form-1" type="text" class="form-control" name="username" placeholder="Username" required>
+                                        </div>
+                                        <div class="mt-3">
+                                            <label for="update-profile-form-1" class="form-label">Foto Pengguna</label>
+                                            <input id="update-profile-form-1" class="form-control" name="foto" type="file" required></input>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-12 2xl:col-span-6">
+                                        <div class="mt-3 2xl:mt-0">
+                                            <label for="update-profile-form-3" class="form-label">Nomor Telepon</label>
+                                            <input id="update-profile-form-1" type="text" class="form-control" name="nomor_telepon" placeholder="Nomor telepon" required>
+                                        </div>
+                                        <div class="mt-3">
+                                            <label for="update-profile-form-3" class="form-label">Password</label>
+                                            <input id="update-profile-form-1" type="password" class="form-control" name="password" required>
+                                        </div>
+                                        <div class="mt-3">
+                                            <label for="update-profile-form-2" class="form-label">Role Pengguna</label><br>
+                                            <input type="radio" id="role" name="role" value="1">
+                                            <label for="kategori">Admin</label>
+                                            <input class="ml-3" type="radio" id="role" name="role" value="2">
+                                            <label for="kategori">Minuman</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-12">
+                                        <div class="mt-4">
+                                            <label for="update-profile-form-5" class="form-label">Alamat</label>
+                                            <textarea id="update-profile-form-5" class="form-control" name="alamat" placeholder="Alamat pengguna" required></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-20 mt-3">Simpan</button>
+                                <a href="<?= base_url('akun') ?>"><button type="button" class="btn btn-danger w-20 mt-3">Kembali
+                                    </button></a>
+                            </form>
                         </div>
-                    </center>
-                </div>
-                <br>
-                <div class="col-xl-8 col-lg-8 col-md-12">
-                    <div class="form-group">
-                        <label for="nama">Nama</label>
-                        <input id="nama" name="nama" type="text" class="form-control validate">
                     </div>
-                    <div class="form-group">
-                        <label for="username">Username</label>
-                        <input id="username" name="username" type="text" class="form-control validate">
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input id="password" name="password" type="password" class="form-control validate">
-                    </div>
-                    <div class="form-group">
-                        <label for="alamat">Alamat</label>
-                        <textarea id="alamat" name="alamat" class="form-control validate"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="nomor_telepon">Nomor Telepon</label>
-                        <input id="nomor_telepon" name="nomor_telepon" type="tel" class="form-control validate">
-                    </div>
-                    <div class="row">
-                        <div class="col-12 col-sm-12">
-                            <button type="submit" class="btn btn-primary">Simpan
-                            </button>
-                            <a href="<?= base_url('akun') ?>" class="btn btn-danger">Batal</a>
-                        </div>
-                    </div>
-                    </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="sweetalert2.min.js"></script>
-<link rel="stylesheet" href="sweetalert2.min.css">
-<script>
-    function konfirmHapus(id) {
-        Swal.fire({
-            title: "Apakah Anda ingin menghapus akun ini?",
-            text: "Akun tidak dapat dipulihkan setelah dihapus!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Ya, hapus!",
-            cancelButtonText: "Tidak jadi"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = "<?= base_url('hapus_akun/') ?>" + id
-            }
-        });
-    }
-</script>

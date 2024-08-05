@@ -9,6 +9,49 @@
 
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
  <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.js"></script>
+ <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+ <script>
+     var ctx = document.getElementById('lineChart').getContext('2d');
+     var myChart = new Chart(ctx, {
+         type: 'line',
+         data: {
+             labels: [
+                 <?php
+                    $bulan = '';
+                    foreach ($statistik as $data) {
+                        $bulan .= '"' . $data->bulan . '",';
+                    }
+                    $bulan = rtrim($bulan, ",");
+                    echo $bulan;
+                    ?>
+             ],
+             datasets: [{
+                 label: 'Pendapatan per Bulan',
+                 data: [
+                     <?php
+                        $pendapatan = '';
+                        foreach ($statistik as $data) {
+                            $pendapatan .= '"' . $data->pendapatan . '",';
+                        }
+                        $pendapatan = rtrim($pendapatan, ",");
+                        echo $pendapatan;
+                        ?>
+                 ],
+                 borderColor: '#26156f',
+                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                 tension: 0.4,
+                 borderWidth: 2.5
+             }]
+         },
+         options: {
+             scales: {
+                 y: {
+                     beginAtZero: true
+                 }
+             }
+         }
+     });
+ </script>
 
  <!-- alert -->
  <?php if (@$_SESSION['sukses']) { ?>
