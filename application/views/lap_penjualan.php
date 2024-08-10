@@ -40,4 +40,39 @@ $pdf->SetFont('', 'B', 12);
 $pdf->Cell(110, 8, "", 0, 0, 'R');
 $pdf->Cell(50, 8, "Total Pendapatan", 1, 0, 'C');
 $pdf->Cell(30, 8, formatRupiah($total['total_harga']), 1, 0, 'R');
+
+
+
+
+date_default_timezone_set('Asia/Jakarta');
+$nama_bulan = [
+    'January'   => 'Januari',
+    'February'  => 'Februari',
+    'March'     => 'Maret',
+    'April'     => 'April',
+    'May'       => 'Mei',
+    'June'      => 'Juni',
+    'July'      => 'Juli',
+    'August'    => 'Agustus',
+    'September' => 'September',
+    'October'   => 'Oktober',
+    'November'  => 'November',
+    'December'  => 'Desember'
+];
+$tanggal_ini = date('d');
+$bulan_ini = date('F');
+$bulan_ini_indo = $nama_bulan[$bulan_ini];
+$tahun_ini = date('Y');
+$pengguna = $this->session->userdata('nama_pengguna');
+
+$pdf->SetFont('', '', 12);
+$pdf->Cell(190, 10, "", 0, 1, 'R');
+$pdf->Cell(190, 10, "", 0, 1, 'R');
+$pdf->Cell(190, 10, "", 0, 1, 'R');
+$pdf->Cell(190, 10, "Yogyakarta, $tanggal_ini $bulan_ini_indo $tahun_ini", 0, 1, 'R');
+$pdf->Cell(190, 10, "Disetujui Oleh,", 0, 1, 'R');
+$pdf->Cell(190, 10, "", 0, 1, 'R');
+$pdf->Cell(190, 10, "", 0, 1, 'R');
+$pdf->SetFont('', 'B', 12);
+$pdf->Cell(190, 10, "$pengguna", 0, 1, 'R');
 $pdf->Output('Laporan Data Akun.pdf');

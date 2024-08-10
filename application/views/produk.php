@@ -26,14 +26,35 @@
                     <tr>
                         <th class="whitespace-nowrap">No</th>
                         <th class="whitespace-nowrap">Produk</th>
+                        <th class="text-center whitespace-nowrap">Deskripsi</th>
                         <th class="whitespace-nowrap">Stok</th>
                         <th class="text-center whitespace-nowrap">Harga Beli</th>
                         <th class="text-center whitespace-nowrap">Harga Jual</th>
+                        <th class="text-center whitespace-nowrap">Tgl Pembaruan</th>
                         <th class="text-center whitespace-nowrap">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php
+                    function tanggal_indo($tanggal)
+                    {
+                        $bulan = array(
+                            1 => 'Januari',
+                            'Februari',
+                            'Maret',
+                            'April',
+                            'Mei',
+                            'Juni',
+                            'Juli',
+                            'Agustus',
+                            'September',
+                            'Oktober',
+                            'November',
+                            'Desember'
+                        );
+                        $pecahkan = explode('-', $tanggal);
+                        return $pecahkan[2] . ' ' . $bulan[(int)$pecahkan[1]] . ' ' . $pecahkan[0];
+                    }
                     $no = 1;
                     foreach ($produk as $item) { ?>
                         <tr class="intro-x">
@@ -48,6 +69,7 @@
                                     <a href="" class="font-medium whitespace-nowrap ml-4"><?= $item->nama_produk; ?></a>
                                 </div>
                             </td>
+                            <td class="whitespace-nowrap"><?= $item->deskripsi ?></td>
                             <td class="text-center">
                                 <div class="flex items-center">
                                     <div class="text-xs text-slate-500 ml-1"><?= $item->stok; ?></div>
@@ -55,6 +77,9 @@
                             </td>
                             <td class="text-center whitespace-nowrap">Rp<?= number_format($item->harga_beli, 0, ',', '.') ?></td>
                             <td class="text-center whitespace-nowrap">Rp<?= number_format($item->harga_jual, 0, ',', '.') ?></td>
+                            <td class="text-center whitespace-nowrap">
+                                <?= tanggal_indo(date('Y-m-d', strtotime($item->tanggal_update))) ?>
+                            </td>
                             <td class="table-report__action w-56">
                                 <div class="flex justify-center items-center">
                                     <a class="flex items-center mr-3" href="<?= base_url() ?>ubah_produk/<?= $item->id_produk ?>"> <i data-lucide="check-square" class="w-4 h-4 mr-1"></i> Ubah </a>

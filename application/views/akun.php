@@ -30,11 +30,31 @@
                         <th class="text-center whitespace-nowrap">Alamat</th>
                         <th class="text-center whitespace-nowrap">No Telepon</th>
                         <th class="text-center whitespace-nowrap">Role</th>
+                        <th class="text-center whitespace-nowrap">Tgl Pembaruan</th>
                         <th class="text-center whitespace-nowrap">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php
+                    function tanggal_indo($tanggal)
+                    {
+                        $bulan = array(
+                            1 => 'Januari',
+                            'Februari',
+                            'Maret',
+                            'April',
+                            'Mei',
+                            'Juni',
+                            'Juli',
+                            'Agustus',
+                            'September',
+                            'Oktober',
+                            'November',
+                            'Desember'
+                        );
+                        $pecahkan = explode('-', $tanggal);
+                        return $pecahkan[2] . ' ' . $bulan[(int)$pecahkan[1]] . ' ' . $pecahkan[0];
+                    }
                     $no = 1;
                     foreach ($pengguna as $item) { ?>
                         <tr class="intro-x">
@@ -61,7 +81,7 @@
                                                             } else {
                                                                 echo 'Pelanggan';
                                                             } ?></td>
-                            <td class="text-center whitespace-nowrap"><?= $item->tanggal_update; ?></td>
+                            <td class="text-center whitespace-nowrap"><?= tanggal_indo(date('Y-m-d', strtotime($item->tanggal_update))) ?></td>
                             <td class="table-report__action w-56">
                                 <div class="flex justify-center items-center">
                                     <a class="flex items-center mr-3" href="<?= base_url() ?>ubah_akun/<?= $item->id_pengguna ?>"> <i data-lucide="check-square" class="w-4 h-4 mr-1"></i> Ubah </a>

@@ -65,6 +65,7 @@ $route['hapus_akun/(:num)'] = 'ProdukController/hapusAkun/$1';
 $route['tambah_produk'] = 'ProdukController/tambahProduk';
 $route['proses_daftar'] = 'LoginController/prosesDaftar';
 $route['simpan_produk'] = 'ProdukController/simpanProduk';
+$route['simpan_akun'] = 'ProdukController/simpanAkun';
 $route['simpan_foto'] = 'ProdukController/simpanFoto';
 $route['ubah_produk/(:num)'] = 'ProdukController/ubahProduk/$1';
 $route['update_produk'] = 'ProdukController/updateProduk';

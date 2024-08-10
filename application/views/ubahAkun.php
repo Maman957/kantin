@@ -1,90 +1,98 @@
-<div class="row tm-mt-big">
-    <div class="col-xl-12 col-lg-10 col-md-12 col-sm-12">
-        <div class="bg-white tm-block">
-            <div class="row mt-4">
-                <br>
-                <div class="col-xl-3 col-lg-3 mb-4 mx-auto">
-                    <center>
-                        <div class="tm-product-img-dummy">
-                            <form method="post" action="<?= base_url('upload_foto') ?>" enctype="multipart/form-data" class="tm-edit-product-form">
-                                <input type="hidden" name="id_pengguna" value="<?= $pengguna['id_pengguna'] ?>">
-                                <input id="fileInput" name="foto" type="file" style="display:none;" required />
-                                <?php if ($pengguna['foto'] == null) {
-                                ?> <i class="fas fa-5x fa-cloud-upload-alt" onclick="document.getElementById('fileInput').click();"></i> <?php
-                                                                                                                                        } else {
-                                                                                                                                            ?> <i class=" fas fa-5x" onclick="document.getElementById('fileInput').click();"><img src="<?= base_url('assets/img/produk/' . $pengguna['foto']) ?>" height="200px"></i> <?php
-                                                                                                                                                                                                                                                                                                                    } ?>
+<div class="content">
+    <div class="intro-y flex items-center mt-8">
+        <h2 class="text-lg font-medium mr-auto">
+            Ubah Akun Pengguna
+        </h2>
+    </div>
+    <div class="grid grid-cols-12 gap-6">
+        <!-- END: Profile Menu -->
+        <div class="col-span-12 lg:col-span-12 2xl:col-span-12">
+            <!-- BEGIN: Display Information -->
+            <div class="intro-y box lg:mt-5">
+                <div class="p-5">
+                    <div class="flex-col-reverse xl:flex-row flex-col">
+                        <div class="flex-1 mt-6 xl:mt-0">
+                            <form method="post" action="<?= base_url('update_akun') ?>" enctype="multipart/form-data">
+                                <div class="grid grid-cols-12 gap-x-5">
+                                    <div class="col-span-12 2xl:col-span-4">
+                                        <div>
+                                            <input type="hidden" name="id_pengguna" value="<?= $pengguna['id_pengguna'] ?>">
+                                            <label for="update-profile-form-1" class="form-label">Nama Pengguna</label>
+                                            <input id="update-profile-form-1" type="text" class="form-control" name="nama" placeholder="Nama pengguna" value="<?= $pengguna['nama_pengguna'] ?>">
+                                        </div>
+                                        <div class="mt-3">
+                                            <label for="update-profile-form-3" class="form-label">Nomor Telepon</label>
+                                            <input id="update-profile-form-1" type="text" class="form-control" name="nomor_telepon" placeholder="089512345678" value="<?= $pengguna['nomor_telepon'] ?>">
+                                        </div>
+                                        <div class="mt-3">
+                                            <label for="update-profile-form-2" class="form-label">Role Pengguna</label><br>
+                                            <input class="form-check-input" type="radio" id="role" name="role" value="1" <?php if ($pengguna['role'] == '1') echo 'checked'; ?>>
+                                            <label class="form-check-label" for="role">Admin</label><br>
+                                            <input class="form-check-input" type="radio" id="role" name="role" value="2" <?php if ($pengguna['role'] == '2') echo 'checked'; ?>>
+                                            <label class="form-check-label" for="role">Pelanggan</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-12 2xl:col-span-5">
+                                        <div>
+                                            <label for="update-profile-form-4" class="form-label">Username</label>
+                                            <input id="update-profile-form-4" type="text" class="form-control" name="username" placeholder="Masukkan username" value="<?= $pengguna['username'] ?>">
+                                        </div>
+                                        <div class="mt-3">
+                                            <label for="update-profile-form-4" class="form-label">Password</label>
+                                            <input id="update-profile-form-4" type="password" class="form-control" name="password" placeholder="******" value="<?= $pengguna['password'] ?>">
+                                        </div>
+                                        <div class="mt-3">
+                                            <label for="update-profile-form-5" class="form-label">Alamat</label>
+                                            <textarea id="update-profile-form-5" class="form-control" name="alamat" placeholder="Alamat pengguna"><?= $pengguna['alamat'] ?></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-12 2xl:col-span-3">
+                                        <div class="w-52 mx-auto xl:mr-0 xl:ml-5">
+                                            <div class="border-2 border-dashed shadow-sm border-slate-200/60 dark:border-darkmode-400 rounded-md p-5">
+                                                <div class="h-40 relative image-fit cursor-pointer zoom-in mx-auto">
+                                                    <input type="file" id="fileInput" style="display: none" accept="image/*" name="foto" />
+                                                    <div class="h-40 relative image-fit cursor-pointer zoom-in mx-auto">
+                                                        <?php if ($pengguna['foto'] == null) { ?>
+                                                            <img id="image" src="<?= base_url('asset') ?>/user.png" alt="Click to upload image" />
+                                                        <?php } else { ?>
+                                                            <img id="image" src="<?= base_url('assets/img/produk/' . $pengguna['foto']) ?>" height="200px" alt="Click to upload image" />
+                                                        <?php } ?>
+                                                        <input type="hidden" name="foto_lama" value="<?= $pengguna['foto'] ?>" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-20 mt-3">Simpan</button>
+                                    <a href="<?= base_url('akun') ?>"><button type="button" class="btn btn-danger w-20 mt-3">Kembali
+                                        </button></a>
+                                </div>
+                            </form>
                         </div>
-                        <br>
-                        <h2 class="tm-block-title d-inline-block mx-auto"><strong><?= $pengguna['nama_pengguna'] ?></strong></h2>
-                        <h5 class="mx-auto"><?php if ($pengguna['role'] == 1) {
-                                                echo 'Admin';
-                                            } else {
-                                                echo 'Pelanggan';
-                                            } ?></h5><br>
-                        <div class="mx-auto">
-                            <button type="submit" class="btn btn-primary">Upload
-                            </button>
-                        </div>
-                    </center>
-                </div>
-                </form>
-                <br>
-                <div class="col-xl-8 col-lg-8 col-md-12">
-
-                    <form method="post" action="<?= base_url('update_akun') ?>" class="tm-edit-product-form">
-                        <input type="hidden" name="id_pengguna" value="<?= $pengguna['id_pengguna'] ?>">
-                        <div class="form-group">
-                            <label for="nama">Nama</label>
-                            <input value="<?= $pengguna['nama_pengguna'] ?>" id="nama" name="nama" type="text" class="form-control validate">
-                        </div>
-                        <div class="form-group">
-                            <label for="username">Username</label>
-                            <input value="<?= $pengguna['username'] ?>" id="username" name="username" type="text" class="form-control validate">
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Password</label>
-                            <input value="<?= $pengguna['password'] ?>" id="password" name="password" type="password" class="form-control validate">
-                        </div>
-                        <div class="form-group">
-                            <label for="alamat">Alamat</label>
-                            <textarea id="alamat" name="alamat" class="form-control validate"><?= $pengguna['alamat'] ?></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="nomor_telepon">Nomor Telepon</label>
-                            <input value="<?= $pengguna['nomor_telepon'] ?>" id="nomor_telepon" name="nomor_telepon" type="tel" class="form-control validate">
-                        </div>
-                        <div class="row">
-                            <div class="col-12 col-sm-12">
-                                <button type="submit" class="btn btn-primary">Simpan
-                                </button>
-                                <a href="<?= base_url('akun') ?>" class="btn btn-danger">Batal</a>
-                            </div>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="sweetalert2.min.js"></script>
-<link rel="stylesheet" href="sweetalert2.min.css">
 <script>
-    function konfirmHapus(id) {
-        Swal.fire({
-            title: "Apakah Anda ingin menghapus akun ini?",
-            text: "Akun tidak dapat dipulihkan setelah dihapus!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Ya, hapus!",
-            cancelButtonText: "Tidak jadi"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = "<?= base_url('hapus_akun/') ?>" + id
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileInput = document.getElementById('fileInput');
+        const image = document.getElementById('image');
+
+        image.addEventListener('click', function() {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    image.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
             }
         });
-    }
+    });
 </script>

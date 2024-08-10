@@ -83,7 +83,7 @@
                                 </div>
                                 <div class="w-52 mx-auto xl:mr-0 xl:ml-6">
                                     <div class="border-2 border-dashed shadow-sm border-slate-200/60 dark:border-darkmode-400 rounded-md p-5">
-                                        <form method="post" action="<?= base_url('simpan_foto') ?>" enctype="multipart/form-data">
+                                        <form method="post" action="<?= base_url('upload_foto') ?>" enctype="multipart/form-data">
                                             <input type="hidden" name="id_pengguna" value="<?= $pengguna['id_pengguna'] ?>">
                                             <input type="file" id="fileInput" style="display: none" accept="image/*" name="foto" />
                                             <div class="h-40 relative image-fit cursor-pointer zoom-in mx-auto">
