@@ -11,13 +11,11 @@
                         <i class="w-4 h-4 absolute my-auto inset-y-0 mr-3 right-0" data-lucide="search" type="submit"></i>
                     </div>
                 </form>
-                <select class="w-48 xl:w-auto form-select box ml-2">
-                    <option>Kategori</option>
-
-                    <option><a href="<?= base_url('katalog') ?>">Semua</a></option>
-
-                    <option>Makanan</option>
-                    <option>Minuman</option>
+                <select class="w-48 xl:w-auto form-select box ml-2" onchange="navigateToPage(this)">
+                    <option value="">Kategori</option>
+                    <option value="<?= base_url('katalog') ?>">Semua</option>
+                    <option value="<?= base_url('makanan/1') ?>">Makanan</option>
+                    <option value="<?= base_url('minuman/2') ?>">Minuman</option>
                 </select>
             </div>
             <div class="hidden xl:block mx-auto text-slate-500"></div>
@@ -28,23 +26,24 @@
             <div class="intro-y col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-3">
                 <div class="box">
                     <div class="p-5">
-                        <div class="h-40 2xl:h-56 image-fit rounded-md overflow-hidden before:block before:absolute before:w-full before:h-full before:top-0 before:left-0 before:z-10 before:bg-gradient-to-t">
-                            <img alt="Midone - HTML Admin Template" class="rounded-md" src="<?= base_url() ?>assets/img/produk/<?= $item->gambar ?>">
-                            <span class="absolute top-0 bg-pending/80 text-white text-xs m-5 px-2 py-1 rounded z-10">New</span>
-                            <div class="absolute bottom-0 text-white px-5 pb-6 z-10"> <a href="" class="block font-medium text-base"><?= $item->nama_produk ?></a> </div>
-                        </div>
+                        <img alt="Midone - HTML Admin Template" class="rounded-md" src="<?= base_url() ?>assets/img/produk/<?= $item->gambar ?>">
                         <div class="text-slate-600 dark:text-slate-500 mt-5">
-                            <div class="flex items-center"> <i data-lucide="link" class="w-4 h-4 mr-2"></i>
-                                <h4 class="intro-y text-lg font-small"> Harga: <b>Rp <?= number_format($item->harga_jual, 0, ',', '.') ?> </b></h4>
+
+                            <div class="flex items-center">
+                                <h5 class="intro-y text-lg font-small"><?= $item->nama_produk ?> </b></h5>
                             </div>
-                            <div class="flex items-center mt-2"> <i data-lucide="layers" class="w-4 h-4 mr-2"></i> Stok: <?= number_format($item->stok, 0, ',', '.') ?> </div>
+                            <div class="flex items-center">
+                                <h4 class="intro-y text-lg font-small"><b>Rp <?= number_format($item->harga_jual, 0, ',', '.') ?> </b></h4>
+                            </div>
+                            <div class="flex items-center mt-2"><?= $item->deskripsi ?> </div>
+                            <div class="flex items-center mt-2"> <i data-lucide="layers" class="w-4 h-4 mr-2"></i> Stok <?= number_format($item->stok, 0, ',', '.') ?> | <?= number_format($item->jumlah_terjual, 0, ',', '.') ?> terjual </div>
                         </div>
                     </div>
                     <div class="flex justify-center lg:justify-end items-center p-5 border-t border-slate-200/60">
-                        <form id="form-keranjang">
+                        <form action="<?= base_url('simpan_keranjang') ?>" method="post">
                             <input type="hidden" name="id_produk" value="<?= $item->id_produk; ?>">
                             <input type="hidden" name="id_pengguna" value="<?= $this->session->userdata('id_pengguna') ?>">
-                            <button class="flex items-center btn btn-sm btn-primary mr-3" onclick="simpanKeranjang()"> <i data-lucide="shopping-cart" class="w-4 h-4 mr-1"></i> Keranjang </button>
+                            <button class="flex items-center btn btn-sm btn-primary mr-1" type="submit"> <i data-lucide="shopping-cart" class="w-4 h-4 mr-1"></i> Keranjang </button>
                         </form>
                     </div>
                 </div>

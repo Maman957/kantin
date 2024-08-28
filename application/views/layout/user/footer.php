@@ -3,6 +3,14 @@
  <script src="<?= site_url('asset') ?>/admin/dist/js/app.js"></script>
  <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
  <script>
+     function navigateToPage(select) {
+         const selectedValue = select.value;
+         if (selectedValue) {
+             window.location.href = selectedValue;
+         }
+     }
+ </script>
+ <script>
      function toggleMenu(event, menuId, element) {
          event.preventDefault();
          var menu = document.getElementById(menuId);
@@ -57,7 +65,7 @@
  <script>
      $(document).ready(function() {
          $.ajax({
-             type: "get",
+             type: "GET",
              url: "<?= base_url('get_keranjang') ?>",
              dataType: "JSON",
              success: function(data) {
@@ -67,36 +75,29 @@
 
                      data.forEach(function(produk) {
                          let quantity = parseInt(produk.quantity) || 1;
-                         let itemPrice = parseFloat(produk.harga_jual.replace(',', ''));
+                         let itemPrice = parseFloat(produk.harga_jual.replace(/,/g, ''));
                          let itemSubtotal = quantity * itemPrice;
                          subTotal += itemSubtotal;
 
                          barang += `
-            <div class="item" id="item_${produk.id}">
-              <img src="<?= base_url() ?>assets/img/produk/${produk.gambar}" class="h-50" alt="Product Image" />
-              <div class="item-details">
-                <h4 class="d-inline-block mb-1">${produk.nama_produk}</h4>
-                <div class="input-group">
-                  <label for="harga" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-form-label">
-                    Harga:
-                  </label>
-                  <label id="harga_${produk.id}" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-form-label ml-1">Rp${produk.harga_jual}</label>
-                </div>
-                <div class="input-group">
-                  <label for="jumlah" class="col-sm-1 mt-3 col-form-label">
-                    Jumlah:
-                  </label>
-                  <input id="jumlah_${produk.id}" name="jumlah_${produk.id}" type="number" class="form-control validate col-xl-5 col-lg-5 col-md-5 col-sm-5 ml-2 mr-10 mb-5 mt-1" value="${quantity}" onchange="updateQuantity(${produk.id})">
-                </div>
-                <div class="input-group">
-                  <label for="subtotal_${produk.id}" class="col-sm-1 col-form-label">
-                    Subtotal:
-                  </label>
-                  <span id="subtotal_${produk.id}" class="col-sm-1 col-form-label ml-1"><strong>Rp${itemSubtotal.toFixed(2)}</strong></span>
-                </div>
-              </div>
-              <button class="remove-button" onclick="removeItem(${produk.id})">Hapus</button>
-            </div>`;
+                        <tr id="item_${produk.id}" class="cart-item">
+                            <td>
+                                <button class="btn btn-danger" onclick="hapusProduk(${produk.id_keranjang})">
+                                    -
+                                </button>
+                            </td>
+                            <td class="!py-4">
+                                <div class="flex items-center">
+                                    <div class="w-10 h-10 image-fit zoom-in">
+                                        <img alt="Midone - HTML Admin Template" class="rounded-lg border-2 border-white shadow-md tooltip" src="<?= base_url() ?>assets/img/produk/${produk.gambar}" title="Uploaded at 8 December 2021">
+                                    </div>
+                                    <a href="" class="font-medium whitespace-nowrap ml-4">${produk.nama_produk}</a>
+                                </div>
+                            </td>
+                            <td class="text-right" id="harga_${produk.id}">Rp${parseFloat(produk.harga_jual.replace(/,/g, '')).toLocaleString('id-ID')}</td>
+                            <td class="text-right"><input id="jumlah_${produk.id}" name="jumlah_${produk.id}" type="number" class="form-control validate col-xl-5 col-lg-5 col-md-5 col-sm-5 ml-2 mr-10 mb-5 mt-1" value="${quantity}" onchange="updateQuantity(${produk.id})"></td>
+                            <td class="text-right" id="subtotal_${produk.id}">Rp${itemSubtotal.toLocaleString('id-ID')}</td>
+                        </tr>`;
                      });
 
                      $('.list-data').prepend(barang);
@@ -110,55 +111,77 @@
          let quantityInput = $(`#jumlah_${itemId}`);
          let quantity = parseInt(quantityInput.val());
 
-         if (!isNaN(quantity)) {
-             let itemPrice = parseFloat($(`#harga_${itemId}`).text().replace('Rp', '').replace(',', ''));
+         if (!isNaN(quantity) && quantity > 0) {
+             let itemPrice = parseFloat($(`#harga_${itemId}`).text().replace('Rp', '').replace(/\./g, '').replace(',', '.'));
              let itemSubtotal = quantity * itemPrice;
 
-             $(`#subtotal_${itemId}`).text('Rp' + itemSubtotal.toFixed(2));
+             $(`#subtotal_${itemId}`).text('Rp ' + itemSubtotal.toLocaleString('id-ID'));
              let subTotal = calculateSubTotal();
              updateTotal(subTotal);
          } else {
              quantityInput.val(1);
+             updateQuantity(itemId);
          }
      }
 
      function calculateSubTotal() {
          let subTotal = 0;
-         $('.item').each(function() {
+         $('.cart-item').each(function() {
              let quantity = parseInt($(this).find('input[type="number"]').val());
-             let itemPrice = parseFloat($(this).find('label[id^="harga_"]').text().replace('Rp', '').replace(',', ''));
-             subTotal += quantity * itemPrice;
+             let itemPrice = parseFloat($(this).find('td[id^="harga_"]').text().replace('Rp', '').replace(/\./g, '').replace(',', '.'));
+             let itemSubtotal = quantity * itemPrice;
+             subTotal += itemSubtotal;
          });
          return subTotal;
      }
 
      function updateTotal(subTotal) {
-         $('#total').text('Rp ' + subTotal.toFixed(2));
+         $('#total').text('Rp ' + subTotal.toLocaleString('id-ID'));
      }
 
-     function removeItem(itemId) {
-         $(`#item_${itemId}`).remove();
-         let subTotal = calculateSubTotal();
-         updateTotal(subTotal);
+     function hapusProduk(itemId) {
+         if (confirm('Apakah Anda ingin menghapus data produk ini?\nData produk tidak dapat dipulihkan setelah dihapus!')) {
+             window.location.href = "<?= base_url('hapus_produk_keranjang') ?>/" + itemId;
+         }
      }
- </script>
- <script>
-     function simpanKeranjang() {
+
+     // Function to save all cart items
+     function simpanSemuaKeranjang() {
+         // Buat array untuk menyimpan semua data produk dalam keranjang
+         let keranjangData = [];
+
+         // Loop melalui setiap item keranjang
+         $('.cart-item').each(function() {
+             let itemId = $(this).attr('id').split('_')[1]; // Mendapatkan ID produk
+             let quantity = parseInt($(this).find('input[type="number"]').val()); // Mendapatkan quantity
+             let itemPrice = parseFloat($(this).find('td[id^="harga_"]').text().replace('Rp', '').replace(/\./g, '').replace(',', '.')); // Mendapatkan harga
+
+             // Push data item ke array keranjangData
+             keranjangData.push({
+                 id_produk: itemId,
+                 quantity: quantity,
+                 harga: itemPrice
+             });
+         });
+
+         // Kirim data ke server menggunakan AJAX
          $.ajax({
              method: "POST",
-             url: "<?= base_url('simpan_keranjang'); ?>",
-             data: $('#form-keranjang').serialize(),
+             url: "<?= base_url('simpan_semua_keranjang'); ?>",
+             data: {
+                 keranjang: keranjangData
+             },
              dataType: "JSON",
              success: function(data) {
                  if (data.Success) {
                      window.location.href = '<?= base_url('keranjang') ?>';
-
-                     // Msg.success('Data Berhasil DiTambahkan !');
+                     // Msg.success('Data Keranjang Berhasil Disimpan!');
                  }
              }
          });
      }
  </script>
+
  </body>
 
  </html>

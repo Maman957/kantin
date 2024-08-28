@@ -7,9 +7,15 @@ class ProdukModel extends CI_Model
         if ($keyword) {
             $this->db->like('nama_produk', $keyword);
         }
-        $this->db->order_by('stok', 'DESC');
-        return $this->db->get('produk');
+        $this->db->select('produk.*, SUM(detail_penjualan.jumlah) AS jumlah_terjual');
+        $this->db->from('produk');
+        $this->db->join('detail_penjualan', 'produk.id_produk = detail_penjualan.id_produk', 'left');
+        $this->db->group_by('produk.id_produk');
+        $this->db->order_by('produk.stok', 'DESC');
+
+        return $this->db->get();
     }
+
     public function getProdukByStok($keyword = null)
     {
         if ($keyword) {
@@ -27,15 +33,64 @@ class ProdukModel extends CI_Model
     {
         return $this->db->query('SELECT pengguna.nama_pengguna, produk.nama_produk, produk.harga_jual, detail_penjualan.jumlah, detail_penjualan.harga, penjualan.tanggal_penjualan FROM detail_penjualan JOIN penjualan ON detail_penjualan.id_penjualan = penjualan.id_penjualan JOIN produk ON detail_penjualan.id_produk = produk.id_produk JOIN pengguna ON penjualan.id_pengguna = pengguna.id_pengguna;');
     }
+    public function getTransaksi($id_pengguna)
+    {
+        $query = $this->db->select('produk.nama_produk, produk.harga_jual, produk.gambar, detail_penjualan.jumlah, detail_penjualan.harga, penjualan.tanggal_penjualan, penjualan.metode_pembayaran')
+            ->from('detail_penjualan')
+            ->join('penjualan', 'detail_penjualan.id_penjualan = penjualan.id_penjualan')
+            ->join('produk', 'detail_penjualan.id_produk = produk.id_produk')
+            ->join('pengguna', 'penjualan.id_pengguna = pengguna.id_pengguna')
+            ->where('penjualan.id_pengguna', $id_pengguna)
+            ->get();
+
+        return $query->result();
+    }
+
     public function getTotalHargaCetak()
     {
         return $this->db->query('SELECT SUM(detail_penjualan.harga) AS total_harga FROM detail_penjualan JOIN penjualan ON detail_penjualan.id_penjualan = penjualan.id_penjualan WHERE penjualan.status_penjualan = 1;');
     }
-    public function getKategori($id_kategori)
+    public function getKategori($id_kategori = null, $keyword = null)
     {
-        $this->db->like('id_kategori', $id_kategori);
-        return $this->db->get('produk');
+        if ($keyword) {
+            $this->db->like('nama_produk', $keyword);
+        }
+        if ($id_kategori) {
+            $this->db->where('id_kategori', $id_kategori);
+        }
+        $this->db->select('produk.*, SUM(detail_penjualan.jumlah) AS jumlah_terjual');
+        $this->db->from('produk');
+        $this->db->join('detail_penjualan', 'produk.id_produk = detail_penjualan.id_produk', 'left');
+        $this->db->group_by('produk.id_produk');
+        $this->db->order_by('produk.stok', 'DESC');
+
+        return $this->db->get();
     }
+    public function getStatus($id_pengguna, $metode_pembayaran = null)
+    {
+        if ($metode_pembayaran) {
+            $this->db->where('penjualan.metode_pembayaran', $metode_pembayaran);
+        } elseif ($metode_pembayaran == 0) {
+            $this->db->where('penjualan.metode_pembayaran', $metode_pembayaran);
+        }
+        $this->db->select('
+        produk.nama_produk,
+        produk.harga_jual,
+        produk.gambar,
+        detail_penjualan.jumlah,
+        detail_penjualan.harga,
+        penjualan.tanggal_penjualan,
+        penjualan.metode_pembayaran
+    ');
+        $this->db->from('detail_penjualan');
+        $this->db->join('penjualan', 'detail_penjualan.id_penjualan = penjualan.id_penjualan');
+        $this->db->join('produk', 'detail_penjualan.id_produk = produk.id_produk');
+        $this->db->join('pengguna', 'penjualan.id_pengguna = pengguna.id_pengguna');
+        $this->db->where('penjualan.id_pengguna', $id_pengguna);
+        return $this->db->get();
+    }
+
+
     public function getPenggunaById($id_pengguna)
     {
         return $this->db->get_where('pengguna', ['id_pengguna' => $id_pengguna]);
@@ -43,6 +98,14 @@ class ProdukModel extends CI_Model
     public function hapusProduk($id_produk)
     {
         $this->db->where('id_produk', $id_produk)->delete('produk');
+    }
+    public function hapusProdukKeranjang($id_keranjang)
+    {
+        $this->db->where('id_keranjang', $id_keranjang)->delete('keranjang');
+    }
+    public function hapusKeranjang($id_pengguna)
+    {
+        $this->db->where('id_pengguna', $id_pengguna)->delete('keranjang');
     }
     public function hapusAkun($id_pengguna)
     {
@@ -166,7 +229,7 @@ class ProdukModel extends CI_Model
     }
     public function getKeranjang($id_pengguna)
     {
-        return $this->db->query('SELECT produk.id_produk,produk.gambar,produk.nama_produk,produk.harga_jual FROM produk join keranjang on produk.id_produk=keranjang.id_produk WHERE keranjang.id_pengguna=' . $id_pengguna);
+        return $this->db->query('SELECT keranjang.id_keranjang,produk.id_produk,produk.gambar,produk.nama_produk,produk.harga_jual FROM produk join keranjang on produk.id_produk=keranjang.id_produk WHERE keranjang.id_pengguna=' . $id_pengguna);
     }
     public function getAkun($keyword = null)
     {

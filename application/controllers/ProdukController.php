@@ -52,6 +52,7 @@ class ProdukController extends CI_Controller
             $this->load->view('template', $data);
         }
     }
+
     public function ubahAkun($id_pengguna)
     {
         $data['pengguna'] = $this->ProdukModel->getPenggunaById($id_pengguna)->row_array();
@@ -63,6 +64,16 @@ class ProdukController extends CI_Controller
     {
         $this->ProdukModel->hapusProduk($id_produk);
         redirect(base_url('produk'));
+    }
+    public function hapusProdukKeranjang($id_keranjang)
+    {
+        $this->ProdukModel->hapusProdukKeranjang($id_keranjang);
+        redirect(base_url('keranjang'));
+    }
+    public function hapusKeranjang($id_pengguna)
+    {
+        $this->ProdukModel->hapusKeranjang($id_pengguna);
+        redirect(base_url('keranjang'));
     }
     public function hapusAkun($id_pengguna)
     {
@@ -321,6 +332,16 @@ class ProdukController extends CI_Controller
 
         $this->load->view('template', $data);
     }
+    public function transaksi()
+    {
+        $id_pengguna = $this->session->userdata('id_pengguna');
+        $data['transaksi'] = $this->ProdukModel->getTransaksi($id_pengguna);
+        $data['title'] = 'History Transaksi';
+        $data['halaman'] = 'transaksi';
+
+
+        $this->load->view('template', $data);
+    }
     public function simpanKeranjang()
     {
         $data = array(
@@ -328,18 +349,7 @@ class ProdukController extends CI_Controller
             'id_pengguna' => $this->input->post('id_pengguna'),
         );
         $this->ProdukModel->simpanKeranjang($data);
-
-        $response = array(
-            'Success' => true,
-        );
-
-        $this->output
-            ->set_status_header(200)
-            ->set_content_type('application/json')
-            ->set_output(json_encode($response, JSON_PRETTY_PRINT))
-            ->_display();
-
-        exit;
+        redirect(base_url('keranjang'));
     }
     public function akun()
     {
@@ -385,5 +395,13 @@ class ProdukController extends CI_Controller
         $data['halaman'] = 'laporan';
 
         $this->load->view('layout', $data);
+    }
+    public function getStatus($metode_pembayaran)
+    {
+        $id_pengguna = $this->session->userdata('id_pengguna');
+        $data['transaksi'] = $this->ProdukModel->getStatus($id_pengguna, $metode_pembayaran)->result();
+        $data['title'] = 'History Transaksi';
+        $data['halaman'] = 'transaksi';
+        $this->load->view('template', $data);
     }
 }

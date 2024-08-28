@@ -18,6 +18,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
     <style>
+        .input-width-3ch {
+            width: 18ch;
+        }
+
         .sub-menu {
             display: none;
             margin-left: 20px;
@@ -82,18 +86,6 @@
             color: #333;
         }
 
-        .remove-button {
-            background-color: #f44336;
-            color: #fff;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-
-        .remove-button:hover {
-            background-color: #d32f2f;
-        }
 
         .add-item {
             margin-top: 20px;
@@ -149,17 +141,7 @@
         }
 
         .checkout-button {
-            background-color: #2196f3;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 4px;
             float: right;
-        }
-
-        .checkout-button:hover {
-            background-color: #0d8bf2;
         }
     </style>
     <!-- END: CSS Assets-->
@@ -877,33 +859,13 @@
             <nav class="side-nav">
                 <ul>
                     <li>
-                        <a href="#" class="side-menu" onclick="toggleMenu(event, 'katalog-menu', this)">
-                            <div class="side-menu__icon"><i data-lucide="home"></i></div>
+                        <a href="<?= base_url('katalog') ?>" class="side-menu">
+                            <div class="side-menu__icon"> <i data-lucide="home"></i> </div>
                             <div class="side-menu__title">
                                 Katalog
-                                <i data-lucide="chevron-down" class="menu__sub-icon"></i>
+                                <div class="side-menu__sub-icon "></div>
                             </div>
                         </a>
-                        <ul id="katalog-menu" class="sub-menu">
-                            <li>
-                                <a href="<?= base_url('katalog') ?>" class="side-menu">
-                                    <div class="side-menu__icon"><i data-lucide="file-text"></i></div>
-                                    <div class="side-menu__title">Semua</div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="<?= base_url('makanan/1') ?>" class="side-menu">
-                                    <div class="side-menu__icon"><i data-lucide="file-text"></i></div>
-                                    <div class="side-menu__title">Makanan</div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="<?= base_url('minuman/2') ?>" class="side-menu">
-                                    <div class="side-menu__icon"><i data-lucide="file-text"></i></div>
-                                    <div class="side-menu__title">Minuman</div>
-                                </a>
-                            </li>
-                        </ul>
                     </li>
                     <li>
                         <a href="<?= base_url('keranjang') ?>" class="side-menu">
@@ -914,12 +876,27 @@
                             </div>
                         </a>
                     </li>
+                    <li>
+                        <a href="<?= base_url('transaksi') ?>" class="side-menu">
+                            <div class="side-menu__icon"> <i data-lucide="history"></i> </div>
+                            <div class="side-menu__title">
+                                Transaksi
+                                <div class="side-menu__sub-icon "></div>
+                            </div>
+                        </a>
+                    </li>
 
                     <li class="side-nav__devider my-6"></li>
                     <li>
                         <a href="<?= base_url('profil') ?>" class="side-menu">
-                            <div class="side-menu__icon"> <i data-lucide="settings"></i> </div>
+                            <div class="side-menu__icon"> <i data-lucide="user"></i> </div>
                             <div class="side-menu__title"> Profil </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="<?= base_url('') ?>" class="side-menu">
+                            <div class="side-menu__icon"> <i data-lucide="log-out"></i> </div>
+                            <div class="side-menu__title"> Keluar </div>
                         </a>
                     </li>
                 </ul>

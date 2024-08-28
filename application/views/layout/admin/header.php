@@ -776,6 +776,12 @@
                             <div class="side-menu__title"> Profil </div>
                         </a>
                     </li>
+                    <li>
+                        <a href="<?= base_url('') ?>" class="side-menu">
+                            <div class="side-menu__icon"> <i data-lucide="log-out"></i> </div>
+                            <div class="side-menu__title"> Keluar </div>
+                        </a>
+                    </li>
                 </ul>
             </nav>
             <!-- END: Side Menu -->
