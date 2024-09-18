@@ -1,10 +1,10 @@
 <div class="content">
     <div class="intro-y flex flex-col sm:flex-row items-center mt-8">
         <h2 class="text-lg font-medium mr-auto">
-            Keranjang
+            Keranjang Pembelian
         </h2>
         <div class="w-full sm:w-auto flex mt-4 sm:mt-0">
-            <a href="<?= site_url('katalog') ?>" class="btn btn-primary shadow-md mr-2">Lanjut Belanja</a>
+            <a href="<?= site_url('katalog') ?>" class="btn btn-success text-white shadow-md mr-2">Lanjut Belanja</a>
             <a href="<?= base_url('hapus_keranjang/' . $this->session->userdata('id_pengguna')) ?>" class="btn btn-danger shadow-md mr-2" onclick="return confirm('Apakah Anda ingin menghapus data produk ini?\nData produk tidak dapat dipulihkan setelah dihapus!')">Hapus Semua</a>
         </div>
     </div>
@@ -22,7 +22,7 @@
                             <option value="2">Non tunai</option>
                             <option value="0">Hutang</option>
                         </select>
-                        <a href="<?= site_url('dashboard/checkout') ?>" class="btn btn-primary shadow-md mr-2 ml-2">CHECKOUT </a>
+                        <button class="btn btn-primary shadow-md mr-2 ml-2" onclick="checkout()">CHECKOUT</button>
                     </div>
                 </div>
                 <div class="overflow-auto lg:overflow-visible -mt-3">

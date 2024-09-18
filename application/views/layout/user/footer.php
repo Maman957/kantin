@@ -95,7 +95,7 @@
                                 </div>
                             </td>
                             <td class="text-right" id="harga_${produk.id}">Rp${parseFloat(produk.harga_jual.replace(/,/g, '')).toLocaleString('id-ID')}</td>
-                            <td class="text-right"><input id="jumlah_${produk.id}" name="jumlah_${produk.id}" type="number" class="form-control validate col-xl-5 col-lg-5 col-md-5 col-sm-5 ml-2 mr-10 mb-5 mt-1" value="${quantity}" onchange="updateQuantity(${produk.id})"></td>
+                            <td class="text-right"><input id="jumlah_${produk.id}" name="jumlah_${produk.id}" type="number" class="form-control validate col-xl-5 col-lg-5 col-md-5 col-sm-5 ml-2 mr-10 mb-5 mt-1" value="${quantity}" onblur="updateQuantity(${produk.id})"></td>
                             <td class="text-right" id="subtotal_${produk.id}">Rp${itemSubtotal.toLocaleString('id-ID')}</td>
                         </tr>`;
                      });
@@ -118,6 +118,23 @@
              $(`#subtotal_${itemId}`).text('Rp ' + itemSubtotal.toLocaleString('id-ID'));
              let subTotal = calculateSubTotal();
              updateTotal(subTotal);
+
+             $.ajax({
+                 method: "POST",
+                 url: "<?= base_url('update_keranjang') ?>",
+                 data: {
+                     id_produk: itemId,
+                     quantity: quantity
+                 },
+                 dataType: "JSON",
+                 success: function(response) {
+                     if (response.success) {
+                         console.log("Data berhasil diperbarui");
+                     } else {
+                         console.log("Gagal memperbarui data");
+                     }
+                 }
+             });
          } else {
              quantityInput.val(1);
              updateQuantity(itemId);
@@ -145,18 +162,14 @@
          }
      }
 
-     // Function to save all cart items
      function simpanSemuaKeranjang() {
-         // Buat array untuk menyimpan semua data produk dalam keranjang
          let keranjangData = [];
 
-         // Loop melalui setiap item keranjang
          $('.cart-item').each(function() {
-             let itemId = $(this).attr('id').split('_')[1]; // Mendapatkan ID produk
-             let quantity = parseInt($(this).find('input[type="number"]').val()); // Mendapatkan quantity
-             let itemPrice = parseFloat($(this).find('td[id^="harga_"]').text().replace('Rp', '').replace(/\./g, '').replace(',', '.')); // Mendapatkan harga
+             let itemId = $(this).attr('id').split('_')[1];
+             let quantity = parseInt($(this).find('input[type="number"]').val());
+             let itemPrice = parseFloat($(this).find('td[id^="harga_"]').text().replace('Rp', '').replace(/\./g, '').replace(',', '.'));
 
-             // Push data item ke array keranjangData
              keranjangData.push({
                  id_produk: itemId,
                  quantity: quantity,
@@ -164,7 +177,6 @@
              });
          });
 
-         // Kirim data ke server menggunakan AJAX
          $.ajax({
              method: "POST",
              url: "<?= base_url('simpan_semua_keranjang'); ?>",
@@ -175,7 +187,6 @@
              success: function(data) {
                  if (data.Success) {
                      window.location.href = '<?= base_url('keranjang') ?>';
-                     // Msg.success('Data Keranjang Berhasil Disimpan!');
                  }
              }
          });

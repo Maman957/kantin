@@ -1,7 +1,7 @@
 <div class="content">
     <div class="intro-y flex items-center mt-8">
         <h2 class="text-lg font-medium mr-auto">
-            Laporan Penjualan
+            Laporan Penjualan Bulan Ini
         </h2>
     </div>
     <div class="grid grid-cols-12 gap-6">
@@ -28,35 +28,68 @@
                                         <thead>
                                             <tr class="tm-bg-gray">
                                                 <th scope="col" width="3%">No</th>
-                                                <th scope="col">Nama Pembeli</th>
-                                                <th scope="col" class="text-center">Nama Produk</th>
-                                                <th scope="col" class="text-center">Harga Satuan</th>
-                                                <th scope="col" class="text-center">Jumlah</th>
-                                                <th scope="col" class="text-center">Tanggal Pembelian</th>
-                                                <th scope="col" class="text-center">Total Harga</th>
+                                                <th scope="col" class="text-center" width="15%">Nama Pembeli</th>
+                                                <th scope="col" class="text-center">Produk</th>
+                                                <th scope="col" class="text-center" width="15%">Tanggal Pembelian</th>
+                                                <th scope="col" class="text-center" width="15%">Total Harga</th>
+                                                <th scope="col" class="text-center" width="12%">Status</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php
+                                            function tanggal_indo($tanggal)
+                                            {
+                                                $bulan = array(
+                                                    1 => 'Januari',
+                                                    'Februari',
+                                                    'Maret',
+                                                    'April',
+                                                    'Mei',
+                                                    'Juni',
+                                                    'Juli',
+                                                    'Agustus',
+                                                    'September',
+                                                    'Oktober',
+                                                    'November',
+                                                    'Desember'
+                                                );
+                                                $pecahkan = explode('-', $tanggal);
+                                                return $pecahkan[2] . ' ' . $bulan[(int)$pecahkan[1]] . ' ' . $pecahkan[0];
+                                            }
                                             $no = 1;
                                             function formatRupiah($angka)
                                             {
                                                 return 'Rp' . number_format($angka, 0, ',', '.');
                                             };
-                                            foreach ($produk as $item) { ?>
+                                            foreach ($laporan as $item): ?>
                                                 <tr class="tm-bg-white">
                                                     <td class="tm-product-name"><?= $no++; ?></td>
-                                                    <td class="tm-product-name"><?= $item->nama_pengguna; ?></td>
-                                                    <td class="text-center"><?= $item->nama_produk; ?></td>
-                                                    <td class="text-right"><?= formatRupiah($item->harga_jual); ?></td>
-                                                    <td class="text-center"><?= $item->jumlah; ?></td>
-                                                    <td class="text-center"><?= $item->tanggal_penjualan; ?></td>
-                                                    <td class="text-right"><?= formatRupiah($item->harga); ?></td>
+                                                    <td class="tm-product-name"><?= $item['nama_pengguna']; ?></td>
+                                                    <td>
+                                                        <?php
+                                                        $produkStr = '';
+                                                        $na = 'a';
+                                                        foreach ($item['produk'] as $produk) :
+                                                            $produkStr .= $na++ . '. ' . $produk->nama_produk . ' - ' . $produk->deskripsi . ' x ' . $produk->jumlah . ' produk. <br>';
+                                                        endforeach;
+                                                        echo $produkStr;
+                                                        ?>
+                                                    </td>
+                                                    <td><?= tanggal_indo(date('Y-m-d', strtotime($item['tanggal_penjualan']))); ?></td>
+                                                    <td class="text-right"><?= formatRupiah($item['total_harga']); ?></td>
+                                                    <td>
+                                                        <?php if ($item['metode_pembayaran'] == 1): ?>
+                                                            <div class="whitespace-nowrap text-primary"> Lunas Tunai </div>
+                                                        <?php elseif ($item['metode_pembayaran'] == 2): ?>
+                                                            <div class="whitespace-nowrap text-success"> Lunas Non Tunai </div>
+                                                        <?php else: ?>
+                                                            <div class="whitespace-nowrap text-danger"> Hutang </div>
+                                                        <?php endif; ?>
+                                                    </td>
                                                 </tr>
-                                            <?php } ?>
+                                            <?php endforeach; ?>
+
                                             <tr>
-                                                <td></td>
-                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>

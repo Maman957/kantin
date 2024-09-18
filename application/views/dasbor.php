@@ -1,7 +1,7 @@
 <div class="content">
     <div class="intro-y flex items-center mt-8">
         <h2 class="text-lg font-medium mr-auto">
-            Dasbor
+            Dasbor Kantin Kejujuran
         </h2>
     </div>
     <div class="grid grid-cols-12 gap-6">
@@ -11,6 +11,70 @@
                 <button type="button" class="btn-close text-white" data-tw-dismiss="alert" aria-label="Close"> <i data-lucide="x" class="w-4 h-4"></i> </button>
             </div>
         </div>
+        <div class="col-span-12 lg:col-span-4 2xl:col-span-4 flex lg:block flex-col-reverse">
+            <div class="intro-y box lg:mt-5">
+                <div class="flex items-center p-5 border-b border-slate-200/60 dark:border-darkmode-400">
+                    <h2 class="font-medium text-base mr-auto">
+                        Total Transaksi Keseluruhan
+                    </h2>
+                </div>
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="rounded-full bg-primary text-white flex items-center justify-center w-12 h-12">
+                            <i data-lucide="dollar-sign"></i>
+                        </div>
+                        <div class="pl-3">
+                            <h2 class="text-xl font-medium mr-auto">
+                                <?= $total_transaksi ?> transaksi
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-span-12 lg:col-span-4 2xl:col-span-4 flex lg:block flex-col-reverse">
+            <div class="intro-y box lg:mt-5">
+                <div class="flex items-center p-5 border-b border-slate-200/60 dark:border-darkmode-400">
+                    <h2 class="font-medium text-base mr-auto">
+                        Total Transaksi Yang Sudah Lunas
+                    </h2>
+                </div>
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="rounded-full bg-success text-white flex items-center justify-center w-12 h-12">
+                            <i data-lucide="dollar-sign"></i>
+                        </div>
+                        <div class="pl-3">
+                            <h2 class="text-xl font-medium mr-auto">
+                                <?= $transaksi_lunas ?> transaksi
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-span-12 lg:col-span-4 2xl:col-span-4 flex lg:block flex-col-reverse">
+            <div class="intro-y box lg:mt-5">
+                <div class="flex items-center p-5 border-b border-slate-200/60 dark:border-darkmode-400">
+                    <h2 class="font-medium text-base mr-auto">
+                        Total Transaksi Yang Belum Lunas
+                    </h2>
+                </div>
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="rounded-full bg-danger text-white flex items-center justify-center w-12 h-12">
+                            <i data-lucide="dollar-sign"></i>
+                        </div>
+                        <div class="pl-3">
+                            <h2 class="text-xl font-medium mr-auto">
+                                <?= $transaksi_belum_lunas ?> transaksi
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- BEGIN: Profile Menu -->
         <div class="col-span-12 lg:col-span-4 2xl:col-span-3 flex lg:block flex-col-reverse">
             <div class="intro-y box lg:mt-5">

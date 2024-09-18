@@ -22,6 +22,9 @@ class ProdukController extends CI_Controller
     {
         $data['produk'] = $this->ProdukModel->getProdukTeratas()->result();
         $data['statistik'] = $this->ProdukModel->getStatistik()->result();
+        $data['total_transaksi'] = $this->ProdukModel->totalTransaksi();
+        $data['transaksi_lunas'] = $this->ProdukModel->transaksiLunas();
+        $data['transaksi_belum_lunas'] = $this->ProdukModel->transaksiBelumLunas();
         $data['halaman'] = 'dasbor';
 
         $this->load->view('layout', $data);
@@ -269,6 +272,14 @@ class ProdukController extends CI_Controller
 
         redirect(base_url('profil'));
     }
+    public function updateStatus()
+    {
+        parse_str(file_get_contents('php://input'), $data);
+
+        $this->ProdukModel->updateStatus($data);
+
+        redirect(base_url('transaksi'));
+    }
     public function updateProduk()
     {
         $data_foto['gambar'] = '';
@@ -313,6 +324,31 @@ class ProdukController extends CI_Controller
         $this->ProdukModel->updateProduk($data);
         redirect(base_url('produk'));
     }
+    public function update_keranjang()
+    {
+        $id_produk = $this->input->post('id_produk');
+        $quantity = $this->input->post('quantity');
+
+        if (is_numeric($quantity) && $quantity > 0) {
+            $result = $this->Keranjang_model->updateQuantity($id_produk, $quantity);
+            echo json_encode(array('success' => $result));
+        } else {
+            echo json_encode(array('success' => false, 'message' => 'Jumlah tidak valid.'));
+        }
+    }
+
+    public function checkout()
+    {
+        $keranjang = $this->Keranjang_model->getAllKeranjang();
+        $id_penjualan = $this->Penjualan_model->insertPenjualan();
+
+        foreach ($keranjang as $item) {
+            $this->Penjualan_model->insertDetailPenjualan($id_penjualan, $item);
+        }
+
+        $this->Keranjang_model->clearKeranjang();
+        echo json_encode(array('success' => true, 'message' => 'Checkout berhasil.'));
+    }
     public function getKeranjang()
     {
         $id_pengguna = $this->session->userdata('id_pengguna');
@@ -335,11 +371,9 @@ class ProdukController extends CI_Controller
     public function transaksi()
     {
         $id_pengguna = $this->session->userdata('id_pengguna');
-        $data['transaksi'] = $this->ProdukModel->getTransaksi($id_pengguna);
-        $data['title'] = 'History Transaksi';
+        $data['transaksi_lengkap'] = $this->ProdukModel->getTransaksiLengkap($id_pengguna);
+        $data['title'] = 'Daftar Transaksi';
         $data['halaman'] = 'transaksi';
-
-
         $this->load->view('template', $data);
     }
     public function simpanKeranjang()
@@ -366,7 +400,7 @@ class ProdukController extends CI_Controller
     public function cetak()
     {
         $this->load->library('Pdf');
-        $data['produk'] = $this->ProdukModel->getLaporanCetak()->result();
+        $data['laporan'] = $this->ProdukModel->getLaporanLengkap();
         $data['total'] = $this->ProdukModel->getTotalHargaCetak()->row_array();
         $this->load->view('lap_penjualan', $data);
         /*if ($this->input->post('submit')) {
@@ -390,8 +424,8 @@ class ProdukController extends CI_Controller
     }
     public function laporan()
     {
+        $data['laporan'] = $this->ProdukModel->getLaporanLengkap();
         $data['total'] = $this->ProdukModel->getTotalHargaCetak()->row_array();
-        $data['produk'] = $this->ProdukModel->getLaporanCetak()->result();
         $data['halaman'] = 'laporan';
 
         $this->load->view('layout', $data);
@@ -399,7 +433,7 @@ class ProdukController extends CI_Controller
     public function getStatus($metode_pembayaran)
     {
         $id_pengguna = $this->session->userdata('id_pengguna');
-        $data['transaksi'] = $this->ProdukModel->getStatus($id_pengguna, $metode_pembayaran)->result();
+        $data['transaksi_lengkap'] = $this->ProdukModel->getStatusLengkap($id_pengguna, $metode_pembayaran);
         $data['title'] = 'History Transaksi';
         $data['halaman'] = 'transaksi';
         $this->load->view('template', $data);

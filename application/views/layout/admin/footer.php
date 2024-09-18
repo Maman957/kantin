@@ -37,21 +37,23 @@
                         echo $pendapatan;
                         ?>
                  ],
-                 borderColor: '#26156f',
-                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                 tension: 0.4,
-                 borderWidth: 2.5
+                 borderColor: '#1e3a8a', // Warna garis
+                 backgroundColor: 'rgba(65, 84, 241, 0.2)', // Warna area yang terisi di bawah garis (transparan)
+                 fill: true, // Mengisi area di bawah garis
+                 tension: 0.4, // Menambahkan kelengkungan pada garis
+                 borderWidth: 2.5 // Ketebalan garis
              }]
          },
          options: {
              scales: {
                  y: {
-                     beginAtZero: true
+                     beginAtZero: true // Memulai skala y dari 0
                  }
              }
          }
      });
  </script>
+
 
  <!-- alert -->
  <?php if (@$_SESSION['sukses']) { ?>

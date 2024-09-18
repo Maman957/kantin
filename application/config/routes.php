@@ -88,6 +88,9 @@ $route['tambah_akun'] = 'ProdukController/tambahAkun';
 $route['tunai/(:num)'] = 'ProdukController/getStatus/$1';
 $route['nontunai/(:num)'] = 'ProdukController/getStatus/$1';
 $route['hutang/(:num)'] = 'ProdukController/getStatus/$1';
+$route['update_keranjang'] = 'ProdukController/update_keranjang';
+$route['update_status'] = 'ProdukController/updateStatus';
+$route['checkout'] = 'ProdukController/checkout';
 
 $route['katalog'] = 'KatalogController/katalog';
 $route['makanan/(:num)'] = 'KatalogController/getKategori/$1';
