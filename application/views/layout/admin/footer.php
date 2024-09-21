@@ -37,17 +37,17 @@
                         echo $pendapatan;
                         ?>
                  ],
-                 borderColor: '#1e3a8a', // Warna garis
-                 backgroundColor: 'rgba(65, 84, 241, 0.2)', // Warna area yang terisi di bawah garis (transparan)
-                 fill: true, // Mengisi area di bawah garis
-                 tension: 0.4, // Menambahkan kelengkungan pada garis
-                 borderWidth: 2.5 // Ketebalan garis
+                 borderColor: '#1e3a8a',
+                 backgroundColor: 'rgba(65, 84, 241, 0.2)',
+                 fill: true,
+                 tension: 0.4,
+                 borderWidth: 2.5
              }]
          },
          options: {
              scales: {
                  y: {
-                     beginAtZero: true // Memulai skala y dari 0
+                     beginAtZero: true
                  }
              }
          }
@@ -55,31 +55,21 @@
  </script>
 
 
- <!-- alert -->
  <?php if (@$_SESSION['sukses']) { ?>
      <script>
          swal("Good job!", "<?php echo $_SESSION['sukses']; ?>", "success");
      </script>
-     <!-- jangan lupa untuk menambahkan unset agar sweet alert tidak muncul lagi saat di refresh -->
  <?php unset($_SESSION['sukses']);
     } ?>
 
- <!-- Chart code -->
  <script>
      am5.ready(function() {
 
-         // Create root element
-         // https://www.amcharts.com/docs/v5/getting-started/#Root_element
          var root = am5.Root.new("chartdiv");
 
-         // Set themes
-         // https://www.amcharts.com/docs/v5/concepts/themes/
          root.setThemes([
              am5themes_Animated.new(root)
          ]);
-
-         // Create chart
-         // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/
          var chart = root.container.children.push(
              am5percent.PieChart.new(root, {
                  startAngle: 160,
@@ -87,8 +77,6 @@
              })
          );
 
-         // Create series
-         // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Series
 
          var series0 = chart.series.push(
              am5percent.PieSeries.new(root, {
@@ -183,16 +171,11 @@
              }
          ];
 
-         // Set data
-         // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Setting_data
          series0.data.setAll(data);
          series1.data.setAll(data);
 
-     }); // end am5.ready()
+     });
  </script>
-
-
- <!-- END: JS Assets-->
  </body>
 
  </html>

@@ -324,31 +324,25 @@ class ProdukController extends CI_Controller
         $this->ProdukModel->updateProduk($data);
         redirect(base_url('produk'));
     }
-    public function update_keranjang()
+    public function updateKeranjang()
     {
-        $id_produk = $this->input->post('id_produk');
-        $quantity = $this->input->post('quantity');
+        $id_keranjang = $this->input->post('id_keranjang');
+        $jumlah = $this->input->post('jumlah');
 
-        if (is_numeric($quantity) && $quantity > 0) {
-            $result = $this->Keranjang_model->updateQuantity($id_produk, $quantity);
-            echo json_encode(array('success' => $result));
-        } else {
-            echo json_encode(array('success' => false, 'message' => 'Jumlah tidak valid.'));
-        }
+        $this->ProdukModel->updateKeranjang($id_keranjang, $jumlah);
+
+        $response = array(
+            'Success' => true,
+        );
+
+        $this->output
+            ->set_status_header(200)
+            ->set_content_type('application/json')
+            ->set_output(json_encode($response, JSON_PRETTY_PRINT))
+            ->_display();
+        exit;
     }
 
-    public function checkout()
-    {
-        $keranjang = $this->Keranjang_model->getAllKeranjang();
-        $id_penjualan = $this->Penjualan_model->insertPenjualan();
-
-        foreach ($keranjang as $item) {
-            $this->Penjualan_model->insertDetailPenjualan($id_penjualan, $item);
-        }
-
-        $this->Keranjang_model->clearKeranjang();
-        echo json_encode(array('success' => true, 'message' => 'Checkout berhasil.'));
-    }
     public function getKeranjang()
     {
         $id_pengguna = $this->session->userdata('id_pengguna');
@@ -381,6 +375,7 @@ class ProdukController extends CI_Controller
         $data = array(
             'id_produk' => $this->input->post('id_produk'),
             'id_pengguna' => $this->input->post('id_pengguna'),
+            'jumlah' => $this->input->post('jumlah'),
         );
         $this->ProdukModel->simpanKeranjang($data);
         redirect(base_url('keranjang'));
@@ -437,5 +432,27 @@ class ProdukController extends CI_Controller
         $data['title'] = 'History Transaksi';
         $data['halaman'] = 'transaksi';
         $this->load->view('template', $data);
+    }
+
+    public function checkout()
+    {
+        $id_pengguna = $this->session->userdata('id_pengguna');
+        $metode_pembayaran = $this->input->post('metode_pembayaran');
+        if ($this->input->post('metode_pembayaran') == 0) {
+            $status_penjualan = 0;
+        } else {
+            $status_penjualan = 1;
+        }
+
+        $id_penjualan = $this->ProdukModel->insertPenjualan($id_pengguna, $metode_pembayaran, $status_penjualan);
+        $this->session->set_userdata('id_penjualan', $id_penjualan);
+
+        if ($this->ProdukModel->checkout($id_pengguna)) {
+            $this->session->set_flashdata('success', 'Checkout berhasil!');
+        } else {
+            $this->session->set_flashdata('error', 'Stok produk yang Anda inginkan saat ini tidak mencukupi.');
+        }
+
+        redirect('transaksi');
     }
 }

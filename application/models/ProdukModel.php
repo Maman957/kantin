@@ -7,9 +7,16 @@ class ProdukModel extends CI_Model
         if ($keyword) {
             $this->db->like('nama_produk', $keyword);
         }
-        $this->db->select('produk.*, SUM(detail_penjualan.jumlah) AS jumlah_terjual');
+        $this->db->select(
+            'produk.*, 
+            SUM(detail_penjualan.jumlah) AS jumlah_terjual'
+        );
         $this->db->from('produk');
-        $this->db->join('detail_penjualan', 'produk.id_produk = detail_penjualan.id_produk', 'left');
+        $this->db->join(
+            'detail_penjualan',
+            'produk.id_produk = detail_penjualan.id_produk',
+            'left'
+        );
         $this->db->group_by('produk.id_produk');
         $this->db->order_by('produk.stok', 'DESC');
 
@@ -31,14 +38,41 @@ class ProdukModel extends CI_Model
     }
     public function getLaporanCetak()
     {
-        $this->db->select('penjualan.id_penjualan, pengguna.nama_pengguna, penjualan.tanggal_penjualan, penjualan.metode_pembayaran, SUM(detail_penjualan.harga) AS total_harga');
+        $this->db->select(
+            'penjualan.id_penjualan, 
+            pengguna.nama_pengguna, 
+            penjualan.tanggal_penjualan, 
+            penjualan.metode_pembayaran, 
+            SUM(detail_penjualan.harga) AS total_harga'
+        );
         $this->db->from('detail_penjualan');
-        $this->db->join('penjualan', 'detail_penjualan.id_penjualan = penjualan.id_penjualan');
-        $this->db->join('produk', 'detail_penjualan.id_produk = produk.id_produk');
-        $this->db->join('pengguna', 'penjualan.id_pengguna = pengguna.id_pengguna');
-        $this->db->where('MONTH(penjualan.tanggal_penjualan)', date('m'));
-        $this->db->where('YEAR(penjualan.tanggal_penjualan)', date('Y'));
-        $this->db->group_by('penjualan.id_penjualan, pengguna.nama_pengguna, penjualan.tanggal_penjualan, penjualan.metode_pembayaran');
+        $this->db->join(
+            'penjualan',
+            '
+            detail_penjualan.id_penjualan = penjualan.id_penjualan'
+        );
+        $this->db->join(
+            'produk',
+            'detail_penjualan.id_produk = produk.id_produk'
+        );
+        $this->db->join(
+            'pengguna',
+            'penjualan.id_pengguna = pengguna.id_pengguna'
+        );
+        $this->db->where(
+            'MONTH(penjualan.tanggal_penjualan)',
+            date('m')
+        );
+        $this->db->where(
+            'YEAR(penjualan.tanggal_penjualan)',
+            date('Y')
+        );
+        $this->db->group_by(
+            'penjualan.id_penjualan, 
+            pengguna.nama_pengguna, 
+            penjualan.tanggal_penjualan, 
+            penjualan.metode_pembayaran'
+        );
         return $this->db->get();
     }
 
@@ -63,14 +97,31 @@ class ProdukModel extends CI_Model
 
     public function getTransaksi($id_pengguna)
     {
-        $this->db->select('penjualan.id_penjualan, penjualan.tanggal_penjualan, penjualan.metode_pembayaran, SUM(detail_penjualan.harga) AS total_harga');
+        $this->db->select(
+            'penjualan.id_penjualan, 
+            penjualan.tanggal_penjualan, 
+            penjualan.metode_pembayaran, 
+            SUM(detail_penjualan.harga) AS total_harga'
+        );
         $this->db->from('detail_penjualan');
-        $this->db->join('penjualan', 'detail_penjualan.id_penjualan = penjualan.id_penjualan');
-        $this->db->join('produk', 'detail_penjualan.id_produk = produk.id_produk');
-        $this->db->join('pengguna', 'penjualan.id_pengguna = pengguna.id_pengguna');
+        $this->db->join(
+            'penjualan',
+            'detail_penjualan.id_penjualan = penjualan.id_penjualan'
+        );
+        $this->db->join(
+            'produk',
+            'detail_penjualan.id_produk = produk.id_produk'
+        );
+        $this->db->join(
+            'pengguna',
+            'penjualan.id_pengguna = pengguna.id_pengguna'
+        );
         $this->db->where('penjualan.id_pengguna', $id_pengguna);
-        $this->db->group_by('penjualan.tanggal_penjualan, penjualan.metode_pembayaran');  // Group berdasarkan tanggal_penjualan dan metode_pembayaran
-        $this->db->order_by('penjualan.tanggal_penjualan', 'DESC');  // Urutkan berdasarkan tanggal terbaru
+        $this->db->group_by('penjualan.id_penjualan');
+        $this->db->order_by(
+            'penjualan.tanggal_penjualan',
+            'DESC'
+        );
         return $this->db->get();
     }
 
@@ -87,16 +138,12 @@ class ProdukModel extends CI_Model
     {
         $laporanTransaksi = $this->getTransaksi($id_pengguna)->result_array();
         foreach ($laporanTransaksi as &$laporan) {
-            $this->db->select('penjualan.id_penjualan');
-            $this->db->from('penjualan');
-            $this->db->where('penjualan.tanggal_penjualan', $laporan['tanggal_penjualan']);
-            $this->db->where('penjualan.id_pengguna', $id_pengguna);
-            $id_penjualan = $this->db->get()->row()->id_penjualan;
-
+            $id_penjualan = $laporan['id_penjualan'];  // Gunakan id_penjualan langsung dari hasil getTransaksi
             $laporan['produk'] = $this->getTransaksiProduk($id_penjualan)->result();
         }
         return $laporanTransaksi;
     }
+
 
 
 
@@ -122,24 +169,22 @@ class ProdukModel extends CI_Model
     }
     public function getStatus($id_pengguna, $metode_pembayaran = null)
     {
-        if ($metode_pembayaran) {
-            $this->db->where('penjualan.metode_pembayaran', $metode_pembayaran);
-        } elseif ($metode_pembayaran == 0) {
+        if ($metode_pembayaran !== null) {
             $this->db->where('penjualan.metode_pembayaran', $metode_pembayaran);
         }
 
         $this->db->select('
-        penjualan.id_penjualan, 
-        penjualan.tanggal_penjualan,
-        penjualan.metode_pembayaran,
-        SUM(detail_penjualan.harga) AS total_harga
-    ');
+            penjualan.id_penjualan, 
+            penjualan.tanggal_penjualan,
+            penjualan.metode_pembayaran,
+            SUM(detail_penjualan.harga) AS total_harga
+        ');
         $this->db->from('detail_penjualan');
         $this->db->join('penjualan', 'detail_penjualan.id_penjualan = penjualan.id_penjualan');
         $this->db->join('produk', 'detail_penjualan.id_produk = produk.id_produk');
         $this->db->join('pengguna', 'penjualan.id_pengguna = pengguna.id_pengguna');
         $this->db->where('penjualan.id_pengguna', $id_pengguna);
-        $this->db->group_by('penjualan.tanggal_penjualan, penjualan.metode_pembayaran');
+        $this->db->group_by('penjualan.id_penjualan'); // Ubah group_by ke id_penjualan
         $this->db->order_by('penjualan.tanggal_penjualan', 'DESC');
 
         return $this->db->get();
@@ -158,14 +203,7 @@ class ProdukModel extends CI_Model
     {
         $laporanStatus = $this->getStatus($id_pengguna, $metode_pembayaran)->result_array();
         foreach ($laporanStatus as &$laporan) {
-            $this->db->select('penjualan.id_penjualan');
-            $this->db->from('penjualan');
-            $this->db->where('penjualan.tanggal_penjualan', $laporan['tanggal_penjualan']);
-            $this->db->where('penjualan.id_pengguna', $id_pengguna);
-            if ($metode_pembayaran !== null) {
-                $this->db->where('penjualan.metode_pembayaran', $metode_pembayaran);
-            }
-            $id_penjualan = $this->db->get()->row()->id_penjualan;
+            $id_penjualan = $laporan['id_penjualan']; // Gunakan id_penjualan langsung dari getStatus
             $laporan['produk'] = $this->getStatusProduk($id_penjualan)->result();
         }
         return $laporanStatus;
@@ -173,9 +211,13 @@ class ProdukModel extends CI_Model
 
 
 
+
     public function getPenggunaById($id_pengguna)
     {
-        return $this->db->get_where('pengguna', ['id_pengguna' => $id_pengguna]);
+        return $this->db->get_where(
+            'pengguna',
+            ['id_pengguna' => $id_pengguna]
+        );
     }
     public function hapusProduk($id_produk)
     {
@@ -315,26 +357,49 @@ class ProdukModel extends CI_Model
     public function simpanKeranjang($data)
     {
         $date = date('Y-m-d');
-        $value = array(
-            'id_produk' => $data['id_produk'],
-            'id_pengguna' => $data['id_pengguna'],
-            'tanggal_update' => $date,
-        );
 
-        $this->db->insert('keranjang', $value);
+        $this->db->select('jumlah');
+        $this->db->from('keranjang');
+        $this->db->where('id_produk', $data['id_produk']);
+        $this->db->where('id_pengguna', $data['id_pengguna']);
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $row = $query->row();
+            $new_jumlah = $row->jumlah + 1;
+
+            $this->db->set('jumlah', $new_jumlah);
+            $this->db->set('tanggal_update', $date);
+            $this->db->where('id_produk', $data['id_produk']);
+            $this->db->where('id_pengguna', $data['id_pengguna']);
+            $this->db->update('keranjang');
+        } else {
+            $value = array(
+                'id_produk' => $data['id_produk'],
+                'id_pengguna' => $data['id_pengguna'],
+                'jumlah' => 1,
+                'tanggal_update' => $date,
+            );
+            $this->db->insert('keranjang', $value);
+        }
     }
-    public function updateQuantity($id_produk, $quantity)
+
+    public function updateKeranjang($id_keranjang, $jumlah)
     {
-        $this->db->set('jumlah', $quantity);
-        $this->db->where('id_produk', $id_produk);
-        return $this->db->update('keranjang');
+        $date = date('Y-m-d');
+
+        $this->db->set('jumlah', $jumlah);
+        $this->db->set('tanggal_update', $date);
+        $this->db->where('id_keranjang', $id_keranjang);
+        $this->db->update('keranjang');
     }
+
 
     public function clearKeranjang()
     {
         return $this->db->empty_table('keranjang');
     }
-    public function insertPenjualan()
+    /*public function insertPenjualan()
     {
         $data = array(
             'tanggal_penjualan' => date('Y-m-d'),
@@ -342,7 +407,7 @@ class ProdukModel extends CI_Model
         );
         $this->db->insert('penjualan', $data);
         return $this->db->insert_id(); // Mengembalikan ID penjualan yang baru
-    }
+    }*/
 
     public function insertDetailPenjualan($id_penjualan, $item)
     {
@@ -364,7 +429,19 @@ class ProdukModel extends CI_Model
     }
     public function getKeranjang($id_pengguna)
     {
-        return $this->db->query('SELECT keranjang.id_keranjang,produk.id_produk,produk.gambar,produk.nama_produk,produk.harga_jual FROM produk join keranjang on produk.id_produk=keranjang.id_produk WHERE keranjang.id_pengguna=' . $id_pengguna);
+        return $this->db->query(
+            'SELECT keranjang.id_keranjang, 
+            keranjang.jumlah, 
+            produk.id_produk,
+            produk.gambar,
+            produk.nama_produk,
+            produk.harga_jual,
+            produk.deskripsi 
+            FROM produk 
+            join keranjang 
+            on produk.id_produk=keranjang.id_produk 
+            WHERE keranjang.id_pengguna=' . $id_pengguna
+        );
     }
     public function getAkun($keyword = null)
     {
@@ -375,7 +452,15 @@ class ProdukModel extends CI_Model
     }
     public function getStatistik()
     {
-        return $this->db->query('SELECT MONTHNAME(penjualan.tanggal_penjualan) AS bulan, SUM(detail_penjualan.harga) AS pendapatan FROM penjualan JOIN detail_penjualan ON penjualan.id_penjualan = detail_penjualan.id_penjualan WHERE penjualan.status_penjualan = 1 GROUP BY MONTHNAME(penjualan.tanggal_penjualan);');
+        return $this->db->query(
+            'SELECT MONTHNAME(penjualan.tanggal_penjualan) AS bulan, 
+            SUM(detail_penjualan.harga) AS pendapatan 
+            FROM penjualan 
+            JOIN detail_penjualan 
+            ON penjualan.id_penjualan = detail_penjualan.id_penjualan 
+            WHERE penjualan.status_penjualan = 1 
+            GROUP BY MONTHNAME(penjualan.tanggal_penjualan);'
+        );
     }
     public function totalTransaksi()
     {
@@ -393,5 +478,62 @@ class ProdukModel extends CI_Model
         $this->db->from('penjualan');
         $this->db->where('status_penjualan', 0);
         return $this->db->count_all_results();
+    }
+    public function insertPenjualan($id_pengguna, $metode_pembayaran, $status_penjualan)
+    {
+        $data = [
+            'id_pengguna' => $id_pengguna,
+            'tanggal_penjualan' => date('Y-m-d'),
+            'metode_pembayaran' => $metode_pembayaran,
+            'status_penjualan' => $status_penjualan
+        ];
+        $this->db->insert('penjualan', $data);
+        return $this->db->insert_id();
+    }
+
+    public function checkout($id_pengguna)
+    {
+        $this->db->select('keranjang.id_produk, keranjang.jumlah, produk.stok');
+        $this->db->from('keranjang');
+        $this->db->join('produk', 'keranjang.id_produk = produk.id_produk');
+        $this->db->where('keranjang.id_pengguna', $id_pengguna);
+        $keranjang = $this->db->get()->result_array();
+
+        foreach ($keranjang as $item) {
+            if ($item['stok'] < $item['jumlah']) {
+                return false;
+            }
+        }
+
+        foreach ($keranjang as $item) {
+            $detail = [
+                'id_penjualan' => $this->session->userdata('id_penjualan'),
+                'id_produk' => $item['id_produk'],
+                'jumlah' => $item['jumlah'],
+                'harga' => $this->getProdukHarga($item['id_produk']) * $item['jumlah']
+            ];
+            $this->db->insert('detail_penjualan', $detail);
+            $this->updateStok($item['id_produk'], $item['jumlah']);
+        }
+
+        $this->db->where('id_pengguna', $id_pengguna);
+        $this->db->delete('keranjang');
+
+        return true;
+    }
+
+    private function updateStok($id_produk, $jumlah)
+    {
+        $this->db->set('stok', 'stok - ' . (int) $jumlah, FALSE);
+        $this->db->where('id_produk', $id_produk);
+        $this->db->update('produk');
+    }
+
+    private function getProdukHarga($id_produk)
+    {
+        $this->db->select('harga_jual');
+        $this->db->from('produk');
+        $this->db->where('id_produk', $id_produk);
+        return $this->db->get()->row()->harga_jual;
     }
 }

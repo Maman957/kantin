@@ -16,29 +16,33 @@
                 <div class="flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5 mb-5">
                     <div class="font-medium text-base truncate">Detail Pesanan</div>
                     <div class="flex items-center ml-auto ">
-                        <select class="w-48 xl:w-auto form-select box border-b border-slate-200/60 dark:border-darkmode-400 mr-6">
-                            <option value="">Metode pembayaran</option>
-                            <option value="1">Tunai</option>
-                            <option value="2">Non tunai</option>
-                            <option value="0">Hutang</option>
-                        </select>
-                        <button class="btn btn-primary shadow-md mr-2 ml-2" onclick="checkout()">CHECKOUT</button>
+                        <form action="<?= base_url('checkout') ?>" method="post">
+                            <select class="w-48 xl:w-auto form-select box border-b border-slate-200/60 dark:border-darkmode-400 mr-6" name="metode_pembayaran" id="metode_pembayaran">
+                                <option value="0">Metode pembayaran</option>
+                                <option value="1">Tunai</option>
+                                <option value="2">Non tunai</option>
+                                <option value="0">Hutang</option>
+                            </select>
+                            <button class="btn btn-primary shadow-md mr-2 ml-2" type="submit">CHECKOUT</button>
+                        </form>
                     </div>
                 </div>
                 <div class="overflow-auto lg:overflow-visible -mt-3">
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th class="whitespace-nowrap">Hapus</th>
                                 <th class="whitespace-nowrap !py-5">Produk</th>
-                                <th class="whitespace-nowrap text-right">Harga satuan</th>
-                                <th class="whitespace-nowrap text-center">Jumlah</th>
-                                <th class="whitespace-nowrap text-right">Subtotal</th>
+                                <th class="whitespace-nowrap text-right" width="15%">Harga satuan</th>
+                                <th class="whitespace-nowrap text-center" width="13%">Jumlah</th>
+                                <th class="whitespace-nowrap text-right" width="15%">Subtotal</th>
+                                <th class="whitespace-nowrap text-center" width="5%">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="list-data">
                             <tr>
-                                <td colspan="4"></td>
+                                <td></td>
+                                <td></td>
+                                <td><strong>Total Harga</strong></td>
                                 <td class="text-right"><strong id="total">0</strong></td>
                             </tr>
                         </tbody>

@@ -43,6 +43,7 @@
                         <form action="<?= base_url('simpan_keranjang') ?>" method="post">
                             <input type="hidden" name="id_produk" value="<?= $item->id_produk; ?>">
                             <input type="hidden" name="id_pengguna" value="<?= $this->session->userdata('id_pengguna') ?>">
+                            <input type="hidden" name="jumlah" value="1">
                             <button class="flex items-center btn btn-sm btn-primary mr-1" type="submit"> <i data-lucide="shopping-cart" class="w-4 h-4 mr-1"></i> Keranjang </button>
                         </form>
                     </div>

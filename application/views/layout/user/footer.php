@@ -72,32 +72,30 @@
                  if (data != null) {
                      let barang = '';
                      let subTotal = 0;
-
                      data.forEach(function(produk) {
-                         let quantity = parseInt(produk.quantity) || 1;
                          let itemPrice = parseFloat(produk.harga_jual.replace(/,/g, ''));
-                         let itemSubtotal = quantity * itemPrice;
+                         let itemSubtotal = produk.jumlah * itemPrice;
                          subTotal += itemSubtotal;
 
                          barang += `
-                        <tr id="item_${produk.id}" class="cart-item">
-                            <td>
-                                <button class="btn btn-danger" onclick="hapusProduk(${produk.id_keranjang})">
-                                    -
-                                </button>
-                            </td>
-                            <td class="!py-4">
-                                <div class="flex items-center">
-                                    <div class="w-10 h-10 image-fit zoom-in">
-                                        <img alt="Midone - HTML Admin Template" class="rounded-lg border-2 border-white shadow-md tooltip" src="<?= base_url() ?>assets/img/produk/${produk.gambar}" title="Uploaded at 8 December 2021">
-                                    </div>
-                                    <a href="" class="font-medium whitespace-nowrap ml-4">${produk.nama_produk}</a>
+                    <tr id="item_${produk.id_keranjang}" class="cart-item">
+                        <td class="!py-4">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 image-fit zoom-in">
+                                    <img alt="Product Image" class="rounded-lg border-2 border-white shadow-md tooltip" src="<?= base_url() ?>assets/img/produk/${produk.gambar}" title="Product Image">
                                 </div>
-                            </td>
-                            <td class="text-right" id="harga_${produk.id}">Rp${parseFloat(produk.harga_jual.replace(/,/g, '')).toLocaleString('id-ID')}</td>
-                            <td class="text-right"><input id="jumlah_${produk.id}" name="jumlah_${produk.id}" type="number" class="form-control validate col-xl-5 col-lg-5 col-md-5 col-sm-5 ml-2 mr-10 mb-5 mt-1" value="${quantity}" onblur="updateQuantity(${produk.id})"></td>
-                            <td class="text-right" id="subtotal_${produk.id}">Rp${itemSubtotal.toLocaleString('id-ID')}</td>
-                        </tr>`;
+                                <a href="" class="font-medium whitespace-nowrap ml-4">${produk.nama_produk} - ${produk.deskripsi}</a>
+                            </div>
+                        </td>
+                        <td class="text-right" id="harga_${produk.id_keranjang}">Rp${parseFloat(produk.harga_jual.replace(/,/g, '')).toLocaleString('id-ID')}</td>
+                        <td class="text-right">
+                            <input id="jumlah_${produk.id_keranjang}" name="jumlah_${produk.id_keranjang}" type="number" class="form-control validate col-xl-5 col-lg-5 col-md-5 col-sm-5 ml-2 mr-10 mb-5 mt-1" value="${produk.jumlah}" onblur="updateQuantity(${produk.id_keranjang})">
+                        </td>
+                        <td class="text-right" id="subtotal_${produk.id_keranjang}">Rp${itemSubtotal.toLocaleString('id-ID')}</td>
+                        <td>
+                            <button class="btn btn-danger" onclick="hapusProduk(${produk.id_keranjang})">Hapus</button>
+                        </td>
+                    </tr>`;
                      });
 
                      $('.list-data').prepend(barang);
@@ -118,27 +116,27 @@
              $(`#subtotal_${itemId}`).text('Rp ' + itemSubtotal.toLocaleString('id-ID'));
              let subTotal = calculateSubTotal();
              updateTotal(subTotal);
-
-             $.ajax({
-                 method: "POST",
-                 url: "<?= base_url('update_keranjang') ?>",
-                 data: {
-                     id_produk: itemId,
-                     quantity: quantity
-                 },
-                 dataType: "JSON",
-                 success: function(response) {
-                     if (response.success) {
-                         console.log("Data berhasil diperbarui");
-                     } else {
-                         console.log("Gagal memperbarui data");
-                     }
-                 }
-             });
          } else {
              quantityInput.val(1);
              updateQuantity(itemId);
          }
+
+         $.ajax({
+             method: "POST",
+             url: "<?= base_url('update_keranjang') ?>",
+             data: {
+                 id_keranjang: itemId,
+                 jumlah: quantity
+             },
+             dataType: "JSON",
+             success: function(data) {
+                 if (data.Success) {
+                     console.log("Data berhasil diperbarui");
+                 } else {
+                     console.log("Gagal memperbarui data");
+                 }
+             }
+         });
      }
 
      function calculateSubTotal() {
@@ -161,37 +159,8 @@
              window.location.href = "<?= base_url('hapus_produk_keranjang') ?>/" + itemId;
          }
      }
-
-     function simpanSemuaKeranjang() {
-         let keranjangData = [];
-
-         $('.cart-item').each(function() {
-             let itemId = $(this).attr('id').split('_')[1];
-             let quantity = parseInt($(this).find('input[type="number"]').val());
-             let itemPrice = parseFloat($(this).find('td[id^="harga_"]').text().replace('Rp', '').replace(/\./g, '').replace(',', '.'));
-
-             keranjangData.push({
-                 id_produk: itemId,
-                 quantity: quantity,
-                 harga: itemPrice
-             });
-         });
-
-         $.ajax({
-             method: "POST",
-             url: "<?= base_url('simpan_semua_keranjang'); ?>",
-             data: {
-                 keranjang: keranjangData
-             },
-             dataType: "JSON",
-             success: function(data) {
-                 if (data.Success) {
-                     window.location.href = '<?= base_url('keranjang') ?>';
-                 }
-             }
-         });
-     }
  </script>
+
 
  </body>
 
