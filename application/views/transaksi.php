@@ -70,7 +70,7 @@
                             <tr class="intro-x">
                                 <td class="!py-4">
                                     <div class="flex items-center">
-                                        <a href="" class="font-medium whitespace-nowrap ml-4"><?= tanggal_indo(date('Y-m-d', strtotime($laporan['tanggal_penjualan']))); ?></a>
+                                        <a href="<?= base_url('bukti/' . $laporan['id_penjualan']) ?>" class="font-medium whitespace-nowrap ml-4"><?= tanggal_indo(date('Y-m-d', strtotime($laporan['tanggal_penjualan']))); ?></a>
                                     </div>
                                 </td>
                                 <td class="whitespace-nowrap">

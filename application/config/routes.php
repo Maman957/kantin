@@ -91,6 +91,7 @@ $route['hutang/(:num)'] = 'ProdukController/getStatus/$1';
 $route['update_keranjang'] = 'ProdukController/update_keranjang';
 $route['update_status'] = 'ProdukController/updateStatus';
 $route['checkout'] = 'ProdukController/checkout';
+$route['bukti/(:num)'] = 'ProdukController/bukti/$1';
 $route['update_keranjang'] = 'ProdukController/updateKeranjang';
 
 $route['katalog'] = 'KatalogController/katalog';

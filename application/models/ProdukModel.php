@@ -40,16 +40,15 @@ class ProdukModel extends CI_Model
     {
         $this->db->select(
             'penjualan.id_penjualan, 
-            pengguna.nama_pengguna, 
-            penjualan.tanggal_penjualan, 
-            penjualan.metode_pembayaran, 
-            SUM(detail_penjualan.harga) AS total_harga'
+        pengguna.nama_pengguna, 
+        penjualan.tanggal_penjualan, 
+        penjualan.metode_pembayaran, 
+        SUM(detail_penjualan.harga) AS total_harga'
         );
         $this->db->from('detail_penjualan');
         $this->db->join(
             'penjualan',
-            '
-            detail_penjualan.id_penjualan = penjualan.id_penjualan'
+            'detail_penjualan.id_penjualan = penjualan.id_penjualan'
         );
         $this->db->join(
             'produk',
@@ -59,40 +58,47 @@ class ProdukModel extends CI_Model
             'pengguna',
             'penjualan.id_pengguna = pengguna.id_pengguna'
         );
-        $this->db->where(
-            'MONTH(penjualan.tanggal_penjualan)',
-            date('m')
-        );
-        $this->db->where(
-            'YEAR(penjualan.tanggal_penjualan)',
-            date('Y')
-        );
+        $this->db->where('MONTH(penjualan.tanggal_penjualan)', date('m'));
+        $this->db->where('YEAR(penjualan.tanggal_penjualan)', date('Y'));
         $this->db->group_by(
             'penjualan.id_penjualan, 
-            pengguna.nama_pengguna, 
-            penjualan.tanggal_penjualan, 
-            penjualan.metode_pembayaran'
+        pengguna.nama_pengguna, 
+        penjualan.tanggal_penjualan, 
+        penjualan.metode_pembayaran'
         );
         return $this->db->get();
     }
 
-    public function getLaporanProduk($id_penjualan)
+    public function getLaporanProduk($id_penjualan, $keyword = null)
     {
+        if ($keyword) {
+            $this->db->like('produk.nama_produk', $keyword);
+        }
         $this->db->select('produk.nama_produk, produk.deskripsi, detail_penjualan.jumlah');
         $this->db->from('detail_penjualan');
         $this->db->join('produk', 'detail_penjualan.id_produk = produk.id_produk');
         $this->db->where('detail_penjualan.id_penjualan', $id_penjualan);
         return $this->db->get();
     }
-    public function getLaporanLengkap()
+
+    public function getLaporanLengkap($keyword = null)
     {
         $laporanCetak = $this->getLaporanCetak()->result_array();
+        $laporanLengkap = [];
+
         foreach ($laporanCetak as &$laporan) {
             $id_penjualan = $laporan['id_penjualan'];
-            $laporan['produk'] = $this->getLaporanProduk($id_penjualan)->result();
+            $produk = $this->getLaporanProduk($id_penjualan, $keyword)->result();
+
+            if (!empty($produk)) {
+                $laporan['produk'] = $produk;
+                $laporanLengkap[] = $laporan;
+            }
         }
-        return $laporanCetak;
+
+        return $laporanLengkap;
     }
+
 
 
     public function getTransaksi($id_pengguna)
@@ -144,12 +150,27 @@ class ProdukModel extends CI_Model
         return $laporanTransaksi;
     }
 
-
-
+    public function getTotalLaba()
+    {
+        return $this->db->query('SELECT SUM((produk.harga_jual - produk.harga_beli) * detail_penjualan.jumlah) AS laba
+FROM detail_penjualan
+JOIN penjualan ON detail_penjualan.id_penjualan = penjualan.id_penjualan
+JOIN produk ON detail_penjualan.id_produk = produk.id_produk
+WHERE penjualan.status_penjualan = 1
+AND MONTH(penjualan.tanggal_penjualan) = MONTH(CURDATE())
+AND YEAR(penjualan.tanggal_penjualan) = YEAR(CURDATE());
+');
+    }
 
     public function getTotalHargaCetak()
     {
-        return $this->db->query('SELECT SUM(detail_penjualan.harga) AS total_harga FROM detail_penjualan JOIN penjualan ON detail_penjualan.id_penjualan = penjualan.id_penjualan WHERE penjualan.status_penjualan = 1;');
+        return $this->db->query('SELECT SUM(detail_penjualan.harga) AS total_harga
+FROM detail_penjualan
+JOIN penjualan ON detail_penjualan.id_penjualan = penjualan.id_penjualan
+WHERE penjualan.status_penjualan = 1
+AND MONTH(penjualan.tanggal_penjualan) = MONTH(CURDATE())
+AND YEAR(penjualan.tanggal_penjualan) = YEAR(CURDATE());
+');
     }
     public function getKategori($id_kategori = null, $keyword = null)
     {
@@ -419,14 +440,6 @@ class ProdukModel extends CI_Model
         );
         return $this->db->insert('detail_penjualan', $data);
     }
-
-    private function calculateTotalKeranjang()
-    {
-        $this->db->select('SUM(quantity * harga_jual) as total');
-        $this->db->from('keranjang');
-        $query = $this->db->get();
-        return $query->row()->total;
-    }
     public function getKeranjang($id_pengguna)
     {
         return $this->db->query(
@@ -535,5 +548,15 @@ class ProdukModel extends CI_Model
         $this->db->from('produk');
         $this->db->where('id_produk', $id_produk);
         return $this->db->get()->row()->harga_jual;
+    }
+    public function getBuktiPenjualan($id_penjualan)
+    {
+        return $this->db->query("
+        SELECT penjualan.tanggal_penjualan, penjualan.metode_pembayaran, produk.nama_produk, produk.harga_jual, produk.deskripsi, detail_penjualan.jumlah, detail_penjualan.harga 
+        FROM detail_penjualan 
+        JOIN penjualan ON detail_penjualan.id_penjualan = penjualan.id_penjualan 
+        JOIN produk ON detail_penjualan.id_produk = produk.id_produk 
+        WHERE detail_penjualan.id_penjualan = $id_penjualan
+    ");
     }
 }

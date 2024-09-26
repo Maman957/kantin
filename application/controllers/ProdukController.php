@@ -397,6 +397,7 @@ class ProdukController extends CI_Controller
         $this->load->library('Pdf');
         $data['laporan'] = $this->ProdukModel->getLaporanLengkap();
         $data['total'] = $this->ProdukModel->getTotalHargaCetak()->row_array();
+        $data['laba'] = $this->ProdukModel->getTotalLaba()->row_array();
         $this->load->view('lap_penjualan', $data);
         /*if ($this->input->post('submit')) {
             $data['keyword'] = $this->input->post('keyword');
@@ -419,8 +420,14 @@ class ProdukController extends CI_Controller
     }
     public function laporan()
     {
-        $data['laporan'] = $this->ProdukModel->getLaporanLengkap();
+        if ($this->input->post('keyword')) {
+            $data['keyword'] = $this->input->post('keyword');
+        } else {
+            $data['keyword'] = null;
+        }
+        $data['laporan'] = $this->ProdukModel->getLaporanLengkap($data['keyword']);
         $data['total'] = $this->ProdukModel->getTotalHargaCetak()->row_array();
+        $data['laba'] = $this->ProdukModel->getTotalLaba()->row_array();
         $data['halaman'] = 'laporan';
 
         $this->load->view('layout', $data);
@@ -438,21 +445,35 @@ class ProdukController extends CI_Controller
     {
         $id_pengguna = $this->session->userdata('id_pengguna');
         $metode_pembayaran = $this->input->post('metode_pembayaran');
+
+        // Cek metode pembayaran
         if ($this->input->post('metode_pembayaran') == 0) {
             $status_penjualan = 0;
         } else {
             $status_penjualan = 1;
         }
 
+        // Insert data penjualan
         $id_penjualan = $this->ProdukModel->insertPenjualan($id_pengguna, $metode_pembayaran, $status_penjualan);
+
+        // Simpan id_penjualan ke session
         $this->session->set_userdata('id_penjualan', $id_penjualan);
 
+        // Proses checkout
         if ($this->ProdukModel->checkout($id_pengguna)) {
+            // Jika checkout berhasil, redirect ke halaman bukti transaksi
             $this->session->set_flashdata('success', 'Checkout berhasil!');
+            redirect('bukti/' . $id_penjualan);
         } else {
+            // Jika checkout gagal
             $this->session->set_flashdata('error', 'Stok produk yang Anda inginkan saat ini tidak mencukupi.');
+            redirect('keranjang');
         }
-
-        redirect('transaksi');
+    }
+    public function bukti($id_penjualan)
+    {
+        $this->load->library('Pdf');
+        $data['produk'] = $this->ProdukModel->getBuktiPenjualan($id_penjualan)->result_array();
+        $this->load->view('buktiPenjualan', $data);
     }
 }

@@ -4,10 +4,17 @@
             Laporan Penjualan Bulan Ini
         </h2>
     </div>
-    <div class="grid grid-cols-12 gap-6">
+    <div class="grid grid-cols-12 gap-6 mt-5">
         <div class="intro-y col-span-12 flex flex-wrap xl:flex-nowrap items-center mt-2">
             <div class="flex w-full sm:w-auto">
-                <div class="w-48 relative text-slate-500"></div>
+                <div class="w-48 relative text-slate-500">
+                    <form action="<?= base_url('laporan') ?>" method="post">
+                        <div class="w-56 relative text-slate-500">
+                            <input type="text" class="form-control w-56 box pr-10" placeholder="Cari..." name="keyword">
+                            <i class="w-4 h-4 absolute my-auto inset-y-0 mr-3 right-0" data-lucide="search" type="submit"></i>
+                        </div>
+                    </form>
+                </div>
             </div>
             <div class="hidden xl:block mx-auto text-slate-500"></div>
             <div class="w-full xl:w-auto flex flex-wrap xl:flex-nowrap items-center gap-y-3 mt-3 xl:mt-0">
@@ -30,8 +37,8 @@
                                                 <th scope="col" width="3%">No</th>
                                                 <th scope="col" class="text-center" width="15%">Nama Pembeli</th>
                                                 <th scope="col" class="text-center">Produk</th>
-                                                <th scope="col" class="text-center" width="15%">Tanggal Pembelian</th>
                                                 <th scope="col" class="text-center" width="15%">Total Harga</th>
+                                                <th scope="col" class="text-center" width="15%">Tanggal Pembelian</th>
                                                 <th scope="col" class="text-center" width="12%">Status</th>
                                             </tr>
                                         </thead>
@@ -68,15 +75,15 @@
                                                     <td>
                                                         <?php
                                                         $produkStr = '';
-                                                        $na = 'a';
+                                                        $na = '1';
                                                         foreach ($item['produk'] as $produk) :
                                                             $produkStr .= $na++ . '. ' . $produk->nama_produk . ' - ' . $produk->deskripsi . ' x ' . $produk->jumlah . ' produk. <br>';
                                                         endforeach;
                                                         echo $produkStr;
                                                         ?>
                                                     </td>
-                                                    <td><?= tanggal_indo(date('Y-m-d', strtotime($item['tanggal_penjualan']))); ?></td>
                                                     <td class="text-right"><?= formatRupiah($item['total_harga']); ?></td>
+                                                    <td><?= tanggal_indo(date('Y-m-d', strtotime($item['tanggal_penjualan']))); ?></td>
                                                     <td>
                                                         <?php if ($item['metode_pembayaran'] == 1): ?>
                                                             <div class="whitespace-nowrap text-primary"> Lunas Tunai </div>
@@ -92,9 +99,14 @@
                                             <tr>
                                                 <td></td>
                                                 <td></td>
-                                                <td></td>
-                                                <td class="text-center"><b>Total Penghasilan</b></td>
+                                                <td><b>Total Penghasilan</b></td>
                                                 <td class="tm-bg-white text-right"><b><?= formatRupiah($total['total_harga']) ?></b></td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td><b>Total Laba</b></td>
+                                                <td class="tm-bg-white text-right"><b><?= formatRupiah($laba['laba']) ?></b></td>
                                             </tr>
                                         </tbody>
                                     </table>
