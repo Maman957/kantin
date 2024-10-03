@@ -65,19 +65,21 @@
             <p class="text-white mt-2">Pindai untuk membayar</p>
         </div>
         <?php
-        /* function formatRupiah($angka)
-        {
-            return 'Rp' . number_format($angka, 0, ',', '.');
-        }
+        $total = 0;
         foreach ($produk as $item) {
             $subtotal = $item['jumlah'] * $item['harga_jual'];
             $total += $subtotal;
-        } */ ?>
+        }
+        function formatRupiah($angka)
+        {
+            return 'Rp' . number_format($angka, 0, ',', '.');
+        } ?>
+
         <div class="payment-info">
-            <h2 class="intro-y text-lg font-medium mt-10">Total yang harus dibayar <strong id="total">0</strong></h2>
+            <h2 class="intro-y text-lg font-medium mt-10">Total yang harus dibayar <strong><?php echo formatRupiah($total) ?></strong></h2>
         </div>
-        <a href="<?= base_url('terbayar/') ?>"><button type="button" class="btn btn-primary w-20 mt-3 mr-5">Terbayar</button></a>
-        <a href="<?= base_url('keranjang') ?>"><button type="button" class="btn btn-danger w-20 mt-3 ml-5">Batal
+        <a href="<?= base_url('ubah_status/' . $this->session->userdata('id_penjualan')) ?>"><button type="button" class="btn btn-primary w-20 mt-3 mr-5">Terbayar</button></a>
+        <a href="<?= base_url('transaksi') ?>"><button type="button" class="btn btn-danger w-20 mt-3 ml-5">Batal
             </button></a>
     </div>
 

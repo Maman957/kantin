@@ -44,7 +44,7 @@ $pdf->Cell(10, 8, "No", 1, 0, 'C');
 $pdf->Cell(50, 8, "Nama Produk", 1, 0, 'C');
 $pdf->Cell(25, 8, "Harga", 1, 0, 'C');
 $pdf->Cell(15, 8, "Jumlah", 1, 0, 'C');
-$pdf->Cell(25, 8, "Subtotal", 1, 1, 'C');
+$pdf->Cell(30, 8, "Subtotal", 1, 1, 'C');
 
 $pdf->SetFont('helvetica', '', 10);
 $no = 1;
@@ -63,12 +63,12 @@ foreach ($produk as $item) {
     $pdf->Cell(50, 8, $item['nama_produk'], 1, 0);
     $pdf->Cell(25, 8, formatRupiah($item['harga_jual']), 1, 0, 'R');
     $pdf->Cell(15, 8, $item['jumlah'], 1, 0, 'C');
-    $pdf->Cell(25, 8, formatRupiah($subtotal), 1, 1, 'R');
+    $pdf->Cell(30, 8, formatRupiah($subtotal), 1, 1, 'R');
 }
 
 $pdf->SetFont('helvetica', 'B', 10);
 $pdf->Cell(100, 8, "Total Harga", 1, 0);
-$pdf->Cell(25, 8, formatRupiah($total), 1, 1, 'R');
+$pdf->Cell(30, 8, formatRupiah($total), 1, 1, 'R');
 
 $metodePembayaran = '';
 $pesanPembayaran = '';
@@ -85,7 +85,7 @@ if ($item['metode_pembayaran'] == 1) {
 }
 
 $pdf->Cell(100, 8, "Metode Pembayaran", 1, 0);
-$pdf->Cell(25, 8, $metodePembayaran, 1, 1, 'R');
+$pdf->Cell(30, 8, $metodePembayaran, 1, 1, 'R');
 
 $pdf->Ln(5);
 $pdf->SetFont('helvetica', 'I', 9);

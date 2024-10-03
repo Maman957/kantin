@@ -406,19 +406,29 @@ class ProdukModel extends CI_Model
 
         $this->db->where('id_pengguna', $data['id_pengguna'])->update('pengguna', $value);
     }
-    public function updateStatus($data)
+    public function updateStatus($data, $id)
     {
-        if ($data['metode'] == 0) {
-            $status = 0;
-        } else {
-            $status = 1;
-        }
+
+        $status = 1;
+        $metode = $data['metode'];
         $value = array(
-            'metode_pembayaran' => $data['metode'],
-            'status_penjualan' => $status
+            'metode_pembayaran' => $metode,
+            'status_penjualan' => $status,
         );
 
-        $this->db->where('id_penjualan', $data['id_penjualan'])->update('penjualan', $value);
+        $this->db->where('id_penjualan', $id)->update('penjualan', $value);
+    }
+    public function ubahStatus($id)
+    {
+
+        $status = 1;
+        $metode = 2;
+        $value = array(
+            'metode_pembayaran' => $metode,
+            'status_penjualan' => $status,
+        );
+
+        $this->db->where('id_penjualan', $id)->update('penjualan', $value);
     }
     public function simpanKeranjang($data)
     {

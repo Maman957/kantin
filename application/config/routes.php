@@ -95,6 +95,8 @@ $route['terbayar'] = 'ProdukController/terbayar';
 $route['bukti/(:num)'] = 'ProdukController/bukti/$1';
 $route['update_keranjang'] = 'ProdukController/updateKeranjang';
 $route['qrcode'] = 'ProdukController/qrcode';
+$route['code/(:num)'] = 'ProdukController/code/$1';
+$route['ubah_status/(:num)'] = 'ProdukController/ubahStatus/$1';
 
 $route['katalog'] = 'KatalogController/katalog';
 $route['makanan/(:num)'] = 'KatalogController/getKategori/$1';

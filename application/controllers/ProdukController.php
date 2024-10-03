@@ -293,11 +293,24 @@ class ProdukController extends CI_Controller
     public function updateStatus()
     {
         parse_str(file_get_contents('php://input'), $data);
+        $id_penjualan = $this->input->post('id_penjualan');
+        if ($this->input->post('metode') == 2) {
+            redirect('code/' . $id_penjualan);
+            $this->session->set_userdata('id_penjualan', $id_penjualan);
+        } else {
+            $this->session->set_flashdata('success', 'Transaksi berhasil dilunasi!');
+            $id = $id_penjualan;
+            $this->ProdukModel->updateStatus($data, $id);
 
+            redirect(base_url('bukti/' . $data['id_penjualan']));
+        }
+    }
+    public function ubahStatus($id)
+    {
         $this->session->set_flashdata('success', 'Transaksi berhasil dilunasi!');
-        $this->ProdukModel->updateStatus($data);
+        $this->ProdukModel->ubahStatus($id);
 
-        redirect(base_url('bukti/' . $data['id_penjualan']));
+        redirect(base_url('bukti/' . $id));
     }
     public function updateProduk()
     {
@@ -514,6 +527,18 @@ class ProdukController extends CI_Controller
     }
     public function qrcode()
     {
-        $this->load->view('qrcode');
+        $data['title'] = 'Keranjang Belanja';
+        $data['halaman'] = 'qrcode';
+
+        $this->load->view('template', $data);
+    }
+    public function code($id)
+    {
+        $data['title'] = 'Keranjang Belanja';
+        $data['halaman'] = 'code';
+        $id_penjualan = $id;
+        $data['produk'] = $this->ProdukModel->getBuktiPenjualan($id_penjualan)->result_array();
+        $data['id'] = $id;
+        $this->load->view('template', $data);
     }
 }
