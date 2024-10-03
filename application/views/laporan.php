@@ -100,13 +100,21 @@
                                                 <td></td>
                                                 <td></td>
                                                 <td><b>Total Penghasilan</b></td>
-                                                <td class="tm-bg-white text-right"><b><?= formatRupiah($total['total_harga']) ?></b></td>
+                                                <td class="tm-bg-white text-right"><b><?php if ($total['total_harga'] == null) {
+                                                                                            echo formatRupiah(0);
+                                                                                        } else {
+                                                                                            echo formatRupiah($total['total_harga']);
+                                                                                        } ?></b></td>
                                             </tr>
                                             <tr>
                                                 <td></td>
                                                 <td></td>
                                                 <td><b>Total Laba</b></td>
-                                                <td class="tm-bg-white text-right"><b><?= formatRupiah($laba['laba']) ?></b></td>
+                                                <td class="tm-bg-white text-right"><b><?php if ($laba['laba'] == null) {
+                                                                                            echo formatRupiah(0);
+                                                                                        } else {
+                                                                                            echo formatRupiah($laba['laba']);
+                                                                                        } ?></b></td>
                                             </tr>
                                         </tbody>
                                     </table>

@@ -81,13 +81,23 @@ foreach ($laporan as $item):
     $pdf->Cell(35, 8, $metodePembayaran, 1, 1);
 endforeach;
 
+if ($total['total_harga'] == null) {
+    $total_harga = 0;
+} else {
+    $total_harga = $total['total_harga'];
+}
+if ($laba['laba'] == null) {
+    $laba = 0;
+} else {
+    $laba = $laba['laba'];
+}
 // Footer untuk Total Pendapatan dan Laba
 $pdf->SetFont('', 'B', 12);
 $pdf->Cell(165, 8, "Total Pendapatan", 1, 0);
-$pdf->Cell(30, 8, formatRupiah($total['total_harga']), 1, 1, 'R');
+$pdf->Cell(30, 8, formatRupiah($total_harga), 1, 1, 'R');
 
 $pdf->Cell(165, 8, "Total Laba", 1, 0);
-$pdf->Cell(30, 8, formatRupiah($laba['laba']), 1, 1, 'R');
+$pdf->Cell(30, 8, formatRupiah($laba), 1, 1, 'R');
 
 // Tanda Tangan
 $pengguna = $this->session->userdata('nama_pengguna');

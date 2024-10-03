@@ -28,11 +28,14 @@ $tahun = date('Y', $timestamp);
 
 $pdf->SetFont('helvetica', 'B', 12);
 $pdf->Cell(0, 10, "Kantin Kejujuran LP3I College Yogyakarta", 0, 1, 'C');
-$pdf->SetFont('helvetica', '', 10);
+$pdf->SetFont('helvetica', 'B', 10);
 $pdf->Cell(0, 10, "Bukti Transaksi", 0, 1, 'C');
 $pdf->Ln(3);
 
+
+$pengguna = $this->session->userdata('nama_pengguna');
 $pdf->SetFont('helvetica', '', 10);
+$pdf->Cell(0, 6, "Nama: " . $pengguna, 0, 1, 'L');
 $pdf->Cell(0, 6, "Tanggal: " . $tanggal . ' ' . $bulan_indo . ' ' . $tahun, 0, 1, 'L');
 
 $pdf->Ln(5);
@@ -88,10 +91,9 @@ $pdf->Ln(5);
 $pdf->SetFont('helvetica', 'I', 9);
 $pdf->Cell(0, 10, $pesanPembayaran, 0, 1, 'C');
 
-$pengguna = $this->session->userdata('nama_pengguna');
 $pdf->Ln(15);
 $pdf->SetFont('helvetica', 'B', 10);
-$pdf->Cell(0, 10, "$pengguna", 0, 1, 'R');
-$pdf->Cell(0, 10, "Pelanggan", 0, 1, 'R');
+$pdf->Cell(0, 10, "Ahmad Lukman", 0, 1, 'R');
+$pdf->Cell(0, 10, "Pengelola", 0, 1, 'R');
 
 $pdf->Output('Bukti_Transaksi.pdf', 'I');

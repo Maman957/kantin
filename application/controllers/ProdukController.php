@@ -147,62 +147,79 @@ class ProdukController extends CI_Controller
         $data_foto['gambar'] = '';
         $foto = $_FILES['gambar']['name'];
         $date = date('Y-m-d');
+        $nama_produk = $this->input->post('nama');
+        $produk_ada = $this->ProdukModel->cekProdukByNama($nama_produk);
 
-        $config['upload_path'] = './assets/img/produk';
-        $config['allowed_types'] = 'jpg|jpeg|png|svg';
-        $config['max_size'] = 1024;
-        $config['overwrite'] = true;
+        if ($produk_ada) {
+            $this->session->set_flashdata('error', 'Produk gagal ditambahkan, nama produk sudah ada di daftar produk.');
+            redirect(base_url('produk'));
+        } else {
 
-        $this->load->library('upload', $config);
-        if ($this->upload->do_upload('gambar')) {
-            $foto = $this->upload->data('file_name');
-            $data_foto['gambar'] = $foto;
+            $config['upload_path'] = './assets/img/produk';
+            $config['allowed_types'] = 'jpg|jpeg|png|svg';
+            $config['max_size'] = 1024;
+            $config['overwrite'] = true;
 
-            $data = array(
-                'nama' => $this->input->post('nama'),
-                'kategori' => $this->input->post('kategori'),
-                'harga_beli' => $this->input->post('harga_beli'),
-                'harga_jual' => $this->input->post('harga_jual'),
-                'stok' => $this->input->post('stok'),
-                'deskripsi' => $this->input->post('deskripsi'),
-                'gambar' => $data_foto['gambar'],
-                'tanggal_update' => $date
-            );
+            $this->load->library('upload', $config);
+            if ($this->upload->do_upload('gambar')) {
+                $foto = $this->upload->data('file_name');
+                $data_foto['gambar'] = $foto;
+
+                $data = array(
+                    'nama' => $this->input->post('nama'),
+                    'kategori' => $this->input->post('kategori'),
+                    'harga_beli' => $this->input->post('harga_beli'),
+                    'harga_jual' => $this->input->post('harga_jual'),
+                    'stok' => $this->input->post('stok'),
+                    'deskripsi' => $this->input->post('deskripsi'),
+                    'gambar' => $data_foto['gambar'],
+                    'tanggal_update' => $date
+                );
+            }
+            $this->session->set_flashdata('success', 'Produk berhasil ditambahkan!');
+            $this->ProdukModel->simpanProduk($data);
+            redirect(base_url('produk'));
         }
-
-        $this->ProdukModel->simpanProduk($data);
-        redirect(base_url('produk'));
     }
     public function simpanAkun()
     {
         $data_foto['foto'] = '';
         $foto = $_FILES['foto']['name'];
         $date = date('Y-m-d');
+        $username = $this->input->post('username');
+        $password = $this->input->post('password');
+        $akun_ada = $this->ProdukModel->cekAkunByUsernamePassword($username, $password);
 
-        $config['upload_path'] = './assets/img/produk';
-        $config['allowed_types'] = 'jpg|jpeg|png|svg';
-        $config['max_size'] = 1024;
-        $config['overwrite'] = true;
+        if ($akun_ada) {
+            $this->session->set_flashdata('error', 'Akun gagal ditambahkan, akun sudah terdaftar di database.');
+            redirect(base_url('akun'));
+        } else {
+            $config['upload_path'] = './assets/img/produk';
+            $config['allowed_types'] = 'jpg|jpeg|png|svg';
+            $config['max_size'] = 1024;
+            $config['overwrite'] = true;
 
-        $this->load->library('upload', $config);
-        if ($this->upload->do_upload('foto')) {
-            $foto = $this->upload->data('file_name');
-            $data_foto['foto'] = $foto;
+            $this->load->library('upload', $config);
+            if ($this->upload->do_upload('foto')) {
+                $foto = $this->upload->data('file_name');
+                $data_foto['foto'] = $foto;
 
-            $data = array(
-                'nama' => $this->input->post('nama'),
-                'nomor_telepon' => $this->input->post('nomor_telepon'),
-                'role' => $this->input->post('role'),
-                'username' => $this->input->post('username'),
-                'password' => $this->input->post('password'),
-                'alamat' => $this->input->post('alamat'),
-                'foto' => $data_foto['foto'],
-                'tanggal_update' => $date
-            );
+                $data = array(
+                    'nama' => $this->input->post('nama'),
+                    'nomor_telepon' => $this->input->post('nomor_telepon'),
+                    'role' => $this->input->post('role'),
+                    'username' => $this->input->post('username'),
+                    'password' => $this->input->post('password'),
+                    'alamat' => $this->input->post('alamat'),
+                    'foto' => $data_foto['foto'],
+                    'tanggal_update' => $date
+                );
+            }
+
+            $this->session->set_flashdata('success', 'Akun berhasil ditambahkan!');
+            $this->ProdukModel->simpanAkun($data);
+            redirect(base_url('akun'));
         }
-
-        $this->ProdukModel->simpanAkun($data);
-        redirect(base_url('akun'));
     }
     public function ubahProduk($id_produk)
     {
@@ -261,6 +278,7 @@ class ProdukController extends CI_Controller
         }
 
 
+        $this->session->set_flashdata('success', 'Akun berhasil diubah!');
         $this->ProdukModel->updateAkun($data);
         redirect(base_url('akun'));
     }
@@ -276,9 +294,10 @@ class ProdukController extends CI_Controller
     {
         parse_str(file_get_contents('php://input'), $data);
 
+        $this->session->set_flashdata('success', 'Transaksi berhasil dilunasi!');
         $this->ProdukModel->updateStatus($data);
 
-        redirect(base_url('transaksi'));
+        redirect(base_url('bukti/' . $data['id_penjualan']));
     }
     public function updateProduk()
     {
@@ -321,6 +340,7 @@ class ProdukController extends CI_Controller
             );
         }
 
+        $this->session->set_flashdata('success', 'Produk berhasil diubah!');
         $this->ProdukModel->updateProduk($data);
         redirect(base_url('produk'));
     }
@@ -394,10 +414,15 @@ class ProdukController extends CI_Controller
     }
     public function cetak()
     {
+        if ($this->input->post('keyword')) {
+            $data['keyword'] = $this->input->post('keyword');
+        } else {
+            $data['keyword'] = null;
+        }
         $this->load->library('Pdf');
         $data['laporan'] = $this->ProdukModel->getLaporanLengkap();
-        $data['total'] = $this->ProdukModel->getTotalHargaCetak()->row_array();
-        $data['laba'] = $this->ProdukModel->getTotalLaba()->row_array();
+        $data['total'] = $this->ProdukModel->getTotalHargaCetak($data['keyword'])->row_array();
+        $data['laba'] = $this->ProdukModel->getTotalLaba($data['keyword'])->row_array();
         $this->load->view('lap_penjualan', $data);
         /*if ($this->input->post('submit')) {
             $data['keyword'] = $this->input->post('keyword');
@@ -421,17 +446,21 @@ class ProdukController extends CI_Controller
     public function laporan()
     {
         if ($this->input->post('keyword')) {
-            $data['keyword'] = $this->input->post('keyword');
+            $keyword = $this->input->post('keyword');
+            redirect('laporan?keyword=' . urlencode($keyword));
         } else {
-            $data['keyword'] = null;
-        }
-        $data['laporan'] = $this->ProdukModel->getLaporanLengkap($data['keyword']);
-        $data['total'] = $this->ProdukModel->getTotalHargaCetak()->row_array();
-        $data['laba'] = $this->ProdukModel->getTotalLaba()->row_array();
-        $data['halaman'] = 'laporan';
+            $keyword = $this->input->get('keyword') ?? null;
 
-        $this->load->view('layout', $data);
+            $data['laporan'] = $this->ProdukModel->getLaporanLengkap($keyword);
+            $data['total'] = $this->ProdukModel->getTotalHargaCetak($keyword)->row_array();
+            $data['laba'] = $this->ProdukModel->getTotalLaba($keyword)->row_array();
+            $data['halaman'] = 'laporan';
+            $data['keyword'] = $keyword;
+
+            $this->load->view('layout', $data);
+        }
     }
+
     public function getStatus($metode_pembayaran)
     {
         $id_pengguna = $this->session->userdata('id_pengguna');
@@ -443,29 +472,36 @@ class ProdukController extends CI_Controller
 
     public function checkout()
     {
-        $id_pengguna = $this->session->userdata('id_pengguna');
         $metode_pembayaran = $this->input->post('metode_pembayaran');
-
-        // Cek metode pembayaran
-        if ($this->input->post('metode_pembayaran') == 0) {
-            $status_penjualan = 0;
+        if ($this->input->post('metode_pembayaran') == 2) {
+            redirect('qrcode');
         } else {
-            $status_penjualan = 1;
+            $id_pengguna = $this->session->userdata('id_pengguna');
+            if ($this->input->post('metode_pembayaran') == 0) {
+                $status_penjualan = 0;
+            } else {
+                $status_penjualan = 1;
+            }
+            $id_penjualan = $this->ProdukModel->insertPenjualan($id_pengguna, $metode_pembayaran, $status_penjualan);
+            $this->session->set_userdata('id_penjualan', $id_penjualan);
+            if ($this->ProdukModel->checkout($id_pengguna)) {
+                $this->session->set_flashdata('success', 'Checkout berhasil!');
+                redirect('bukti/' . $id_penjualan);
+            } else {
+                $this->session->set_flashdata('error', 'Stok produk yang Anda inginkan saat ini tidak mencukupi.');
+                redirect('keranjang');
+            }
         }
-
-        // Insert data penjualan
-        $id_penjualan = $this->ProdukModel->insertPenjualan($id_pengguna, $metode_pembayaran, $status_penjualan);
-
-        // Simpan id_penjualan ke session
+    }
+    public function terbayar()
+    {
+        $id_pengguna = $this->session->userdata('id_pengguna');
+        $id_penjualan = $this->ProdukModel->insertPenjualan($id_pengguna, 2, 1);
         $this->session->set_userdata('id_penjualan', $id_penjualan);
-
-        // Proses checkout
         if ($this->ProdukModel->checkout($id_pengguna)) {
-            // Jika checkout berhasil, redirect ke halaman bukti transaksi
             $this->session->set_flashdata('success', 'Checkout berhasil!');
             redirect('bukti/' . $id_penjualan);
         } else {
-            // Jika checkout gagal
             $this->session->set_flashdata('error', 'Stok produk yang Anda inginkan saat ini tidak mencukupi.');
             redirect('keranjang');
         }
@@ -475,5 +511,9 @@ class ProdukController extends CI_Controller
         $this->load->library('Pdf');
         $data['produk'] = $this->ProdukModel->getBuktiPenjualan($id_penjualan)->result_array();
         $this->load->view('buktiPenjualan', $data);
+    }
+    public function qrcode()
+    {
+        $this->load->view('qrcode');
     }
 }

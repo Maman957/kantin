@@ -66,6 +66,10 @@ class ProdukModel extends CI_Model
         penjualan.tanggal_penjualan, 
         penjualan.metode_pembayaran'
         );
+        $this->db->order_by(
+            'penjualan.id_penjualan',
+            'DESC'
+        );
         return $this->db->get();
     }
 
@@ -128,6 +132,10 @@ class ProdukModel extends CI_Model
             'penjualan.tanggal_penjualan',
             'DESC'
         );
+        $this->db->order_by(
+            'penjualan.id_penjualan',
+            'DESC'
+        );
         return $this->db->get();
     }
 
@@ -144,33 +152,45 @@ class ProdukModel extends CI_Model
     {
         $laporanTransaksi = $this->getTransaksi($id_pengguna)->result_array();
         foreach ($laporanTransaksi as &$laporan) {
-            $id_penjualan = $laporan['id_penjualan'];  // Gunakan id_penjualan langsung dari hasil getTransaksi
+            $id_penjualan = $laporan['id_penjualan'];
             $laporan['produk'] = $this->getTransaksiProduk($id_penjualan)->result();
         }
         return $laporanTransaksi;
     }
 
-    public function getTotalLaba()
+
+    public function getTotalLaba($keyword = null)
     {
-        return $this->db->query('SELECT SUM((produk.harga_jual - produk.harga_beli) * detail_penjualan.jumlah) AS laba
-FROM detail_penjualan
-JOIN penjualan ON detail_penjualan.id_penjualan = penjualan.id_penjualan
-JOIN produk ON detail_penjualan.id_produk = produk.id_produk
-WHERE penjualan.status_penjualan = 1
-AND MONTH(penjualan.tanggal_penjualan) = MONTH(CURDATE())
-AND YEAR(penjualan.tanggal_penjualan) = YEAR(CURDATE());
-');
+        $this->db->select('SUM((produk.harga_jual - produk.harga_beli) * detail_penjualan.jumlah) AS laba');
+        $this->db->from('detail_penjualan');
+        $this->db->join('penjualan', 'detail_penjualan.id_penjualan = penjualan.id_penjualan');
+        $this->db->join('produk', 'detail_penjualan.id_produk = produk.id_produk');
+        $this->db->where('penjualan.status_penjualan', 1);
+        $this->db->where('MONTH(penjualan.tanggal_penjualan)', 'MONTH(CURDATE())', false);
+        $this->db->where('YEAR(penjualan.tanggal_penjualan)', 'YEAR(CURDATE())', false);
+
+        if ($keyword) {
+            $this->db->like('produk.nama_produk', $keyword);
+        }
+
+        return $this->db->get();
     }
 
-    public function getTotalHargaCetak()
+    public function getTotalHargaCetak($keyword = null)
     {
-        return $this->db->query('SELECT SUM(detail_penjualan.harga) AS total_harga
-FROM detail_penjualan
-JOIN penjualan ON detail_penjualan.id_penjualan = penjualan.id_penjualan
-WHERE penjualan.status_penjualan = 1
-AND MONTH(penjualan.tanggal_penjualan) = MONTH(CURDATE())
-AND YEAR(penjualan.tanggal_penjualan) = YEAR(CURDATE());
-');
+        $this->db->select('SUM(detail_penjualan.harga) AS total_harga');
+        $this->db->from('detail_penjualan');
+        $this->db->join('penjualan', 'detail_penjualan.id_penjualan = penjualan.id_penjualan');
+        $this->db->join('produk', 'detail_penjualan.id_produk = produk.id_produk');
+        $this->db->where('penjualan.status_penjualan', 1);
+        $this->db->where('MONTH(penjualan.tanggal_penjualan)', 'MONTH(CURDATE())', false);
+        $this->db->where('YEAR(penjualan.tanggal_penjualan)', 'YEAR(CURDATE())', false);
+
+        if ($keyword) {
+            $this->db->like('produk.nama_produk', $keyword);
+        }
+
+        return $this->db->get();
     }
     public function getKategori($id_kategori = null, $keyword = null)
     {
@@ -205,7 +225,7 @@ AND YEAR(penjualan.tanggal_penjualan) = YEAR(CURDATE());
         $this->db->join('produk', 'detail_penjualan.id_produk = produk.id_produk');
         $this->db->join('pengguna', 'penjualan.id_pengguna = pengguna.id_pengguna');
         $this->db->where('penjualan.id_pengguna', $id_pengguna);
-        $this->db->group_by('penjualan.id_penjualan'); // Ubah group_by ke id_penjualan
+        $this->db->group_by('penjualan.id_penjualan');
         $this->db->order_by('penjualan.tanggal_penjualan', 'DESC');
 
         return $this->db->get();
@@ -224,7 +244,7 @@ AND YEAR(penjualan.tanggal_penjualan) = YEAR(CURDATE());
     {
         $laporanStatus = $this->getStatus($id_pengguna, $metode_pembayaran)->result_array();
         foreach ($laporanStatus as &$laporan) {
-            $id_penjualan = $laporan['id_penjualan']; // Gunakan id_penjualan langsung dari getStatus
+            $id_penjualan = $laporan['id_penjualan'];
             $laporan['produk'] = $this->getStatusProduk($id_penjualan)->result();
         }
         return $laporanStatus;
@@ -256,6 +276,18 @@ AND YEAR(penjualan.tanggal_penjualan) = YEAR(CURDATE());
     {
         $this->db->where('id_pengguna', $id_pengguna)->delete('pengguna');
     }
+    public function cekProdukByNama($nama_produk)
+    {
+        $this->db->where('nama_produk', $nama_produk);
+        $query = $this->db->get('produk');
+
+        if ($query->num_rows() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function simpanProduk($data)
     {
         $value = array(
@@ -271,6 +303,19 @@ AND YEAR(penjualan.tanggal_penjualan) = YEAR(CURDATE());
 
         $this->db->insert('produk', $value);
     }
+    public function cekAkunByUsernamePassword($username, $password)
+    {
+        $this->db->where('username', $username);
+        $this->db->where('password', $password);
+        $query = $this->db->get('pengguna');
+
+        if ($query->num_rows() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function simpanAkun($data)
     {
         $value = array(
@@ -420,15 +465,6 @@ AND YEAR(penjualan.tanggal_penjualan) = YEAR(CURDATE());
     {
         return $this->db->empty_table('keranjang');
     }
-    /*public function insertPenjualan()
-    {
-        $data = array(
-            'tanggal_penjualan' => date('Y-m-d'),
-            'total_penjualan' => $this->calculateTotalKeranjang()
-        );
-        $this->db->insert('penjualan', $data);
-        return $this->db->insert_id(); // Mengembalikan ID penjualan yang baru
-    }*/
 
     public function insertDetailPenjualan($id_penjualan, $item)
     {
@@ -466,13 +502,21 @@ AND YEAR(penjualan.tanggal_penjualan) = YEAR(CURDATE());
     public function getStatistik()
     {
         return $this->db->query(
-            'SELECT MONTHNAME(penjualan.tanggal_penjualan) AS bulan, 
-            SUM(detail_penjualan.harga) AS pendapatan 
-            FROM penjualan 
-            JOIN detail_penjualan 
-            ON penjualan.id_penjualan = detail_penjualan.id_penjualan 
-            WHERE penjualan.status_penjualan = 1 
-            GROUP BY MONTHNAME(penjualan.tanggal_penjualan);'
+            'SELECT 
+    MONTHNAME(penjualan.tanggal_penjualan) AS bulan, 
+    SUM(detail_penjualan.harga) AS pendapatan 
+FROM 
+    penjualan 
+JOIN 
+    detail_penjualan 
+ON 
+    penjualan.id_penjualan = detail_penjualan.id_penjualan 
+WHERE 
+    penjualan.status_penjualan = 1 
+GROUP BY 
+    MONTH(penjualan.tanggal_penjualan)
+ORDER BY 
+    MONTH(penjualan.tanggal_penjualan);'
         );
     }
     public function totalTransaksi()

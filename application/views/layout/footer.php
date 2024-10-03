@@ -112,7 +112,7 @@
           });
 
           $('.list-data').prepend(barang);
-          updateTotal(subTotal); // Update total initially
+          updateTotal(subTotal);
         }
       }
     });
@@ -126,14 +126,11 @@
       let itemPrice = parseFloat($(`#harga_${itemId}`).text().replace('Rp', '').replace(',', ''));
       let itemSubtotal = quantity * itemPrice;
 
-      $(`#subtotal_${itemId}`).text('Rp' + itemSubtotal.toFixed(2)); // Update item subtotal
-
-      // Recalculate subTotal using a dedicated function for clarity
+      $(`#subtotal_${itemId}`).text('Rp' + itemSubtotal.toFixed(2));
       let subTotal = calculateSubTotal();
       updateTotal(subTotal);
     } else {
-      // Handle invalid quantity input (optional: display error message)
-      quantityInput.val(1); // Reset to default quantity (optional)
+      quantityInput.val(1);
     }
   }
 
@@ -148,13 +145,13 @@
   }
 
   function updateTotal(subTotal) {
-    $('#total').text('Rp ' + subTotal.toFixed(2)); // Update total amount
+    $('#total').text('Rp ' + subTotal.toFixed(2));
   }
 
   function removeItem(itemId) {
-    $(`#item_${itemId}`).remove(); // Remove item from DOM
+    $(`#item_${itemId}`).remove();
     let subTotal = calculateSubTotal();
-    updateTotal(subTotal); // Update total after removing item
+    updateTotal(subTotal);
   }
 
 
@@ -167,8 +164,6 @@
       success: function(data) {
         if (data.Success) {
           window.location.href = '<?= base_url('Admin') ?>';
-
-          // Msg.success('Data Berhasil DiTambahkan !');
         }
       }
     });

@@ -36,7 +36,12 @@
                                 <h4 class="intro-y text-lg font-small"><b>Rp <?= number_format($item->harga_jual, 0, ',', '.') ?> </b></h4>
                             </div>
                             <div class="flex items-center mt-2"><?= $item->deskripsi ?> </div>
-                            <div class="flex items-center mt-2"> <i data-lucide="layers" class="w-4 h-4 mr-2"></i> Stok <?= number_format($item->stok, 0, ',', '.') ?> | <?= number_format($item->jumlah_terjual, 0, ',', '.') ?> terjual </div>
+                            <div class="flex items-center mt-2"> <i data-lucide="layers" class="w-4 h-4 mr-2"></i> Stok <?= number_format($item->stok, 0, ',', '.') ?> | <?php if ($item->jumlah_terjual > 0) {
+                                                                                                                                                                                echo number_format($item->jumlah_terjual, 0, ',', '.');
+                                                                                                                                                                            } else {
+                                                                                                                                                                                echo 0;
+                                                                                                                                                                            }
+                                                                                                                                                                            ?> terjual </div>
                         </div>
                     </div>
                     <div class="flex justify-center lg:justify-end items-center p-5 border-t border-slate-200/60">

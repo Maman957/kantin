@@ -2,6 +2,26 @@
     <h2 class="intro-y text-lg font-medium mt-10">
         Daftar Produk
     </h2>
+    <?php if ($this->session->flashdata('success')): ?>
+        <div class="grid grid-cols-12 gap-6 mt-5">
+            <div class="col-span-12 mt-6 -mb-6 intro-y">
+                <div class="alert alert-dismissible show box bg-primary text-white flex items-center mb-6" role="alert">
+                    <span>Selamat, <b><?php echo $this->session->userdata('nama_pengguna') ?></b>. <?= $this->session->flashdata('success'); ?></span>
+                    <button type="button" class="btn-close text-white" data-tw-dismiss="alert" aria-label="Close"> <i data-lucide="x" class="w-4 h-4"></i> </button>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+    <?php if ($this->session->flashdata('error')): ?>
+        <div class="grid grid-cols-12 gap-6 mt-5">
+            <div class="col-span-12 mt-6 -mb-6 intro-y">
+                <div class="alert alert-dismissible show box bg-danger text-white flex items-center mb-6" role="alert">
+                    <span>Mohon maaf, <b><?php echo $this->session->userdata('nama_pengguna') ?></b>. <?= $this->session->flashdata('error'); ?></span>
+                    <button type="button" class="btn-close text-white" data-tw-dismiss="alert" aria-label="Close"> <i data-lucide="x" class="w-4 h-4"></i> </button>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
     <div class="grid grid-cols-12 gap-6 mt-5">
         <div class="intro-y col-span-12 flex flex-wrap xl:flex-nowrap items-center mt-2">
             <div class="flex w-full sm:w-auto">
